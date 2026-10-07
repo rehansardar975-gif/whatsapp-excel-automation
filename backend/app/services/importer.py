@@ -231,7 +231,7 @@ def analyze(db: Session, headers: list[str], rows: list[list], mapping: dict, de
 
 
 # ---------- import ----------
-def commit(db: Session, batch: ImportBatch, consent_confirmed: bool) -> dict:
+def commit(db: Session, batch: ImportBatch, consent_confirmed: bool, via: str = "app") -> dict:
     records, summary = analyze(db, batch.headers, batch.rows, batch.mapping, batch.default_country, consent_confirmed)
     now = datetime.now(timezone.utc)
     created = 0
@@ -258,7 +258,7 @@ def commit(db: Session, batch: ImportBatch, consent_confirmed: bool) -> dict:
     summary["imported"] = created
     batch.summary = summary
     batch.rows = []  # raw file data is no longer needed once imported
-    activity.log(db, "import", f"Imported {created} contacts from {batch.file_name}", "success",
+    activity.log(db, "import", f"Imported {created} contacts from {batch.file_name}" + (f" via {via}" if via != "app" else ""), "success",
                  batch_id=batch.id, **{k: summary[k] for k in ("total", "duplicate", "invalid", "missing", "do_not_contact", "existing")})
     if summary["duplicate"]:
         activity.log(db, "duplicate", f"{summary['duplicate']} duplicate rows removed from {batch.file_name}", "warning", batch_id=batch.id)

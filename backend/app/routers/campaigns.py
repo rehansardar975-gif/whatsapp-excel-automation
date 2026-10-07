@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -10,6 +10,12 @@ from ..services import campaigns as svc
 from .contacts import _file
 
 router = APIRouter(prefix="/api/campaigns", tags=["campaigns"])
+
+
+def via_of(request: Request) -> str:
+    """Automation tools identify themselves with an `X-Automation` header (e.g. n8n)."""
+    v = (request.headers.get("x-automation") or "").strip().lower()
+    return v[:20] if v.isalnum() else "app"
 
 
 class Audience(BaseModel):
@@ -41,12 +47,12 @@ def list_campaigns(db: Session = Depends(get_db)):
 
 
 @router.post("", status_code=201)
-def create(body: CampaignIn, db: Session = Depends(get_db)):
+def create(body: CampaignIn, request: Request, db: Session = Depends(get_db)):
     t = db.get(Template, body.template_id)
     if not t:
         raise HTTPException(422, "Choose a message first.")
     try:
-        c = svc.create_campaign(db, body.name.strip(), t, body.audience.model_dump(exclude_none=True))
+        c = svc.create_campaign(db, body.name.strip(), t, body.audience.model_dump(exclude_none=True), via_of(request))
     except ValueError as e:
         raise HTTPException(422, str(e))
     return campaign_out(c, svc.report(db, c))
@@ -59,10 +65,10 @@ def get(cid: int, db: Session = Depends(get_db)):
 
 
 @router.post("/{cid}/start")
-def start(cid: int, db: Session = Depends(get_db)):
+def start(cid: int, request: Request, db: Session = Depends(get_db)):
     c = _get(db, cid)
     try:
-        svc.start(db, c)
+        svc.start(db, c, via_of(request))
     except ValueError as e:
         raise HTTPException(409, str(e))
     return campaign_out(c, svc.report(db, c))

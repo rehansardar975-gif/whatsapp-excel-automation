@@ -65,4 +65,11 @@ Set `WHATSAPP_MODE=cloud_api`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKE
 **Not verified:** the Cloud API provider was not run against Meta (no business account in this project). Its request payload shape is unit-tested.
 
 ## n8n
-Each step is an HTTP endpoint (see README), so n8n can orchestrate: file trigger → import → commit → campaign → start, then poll the campaign or listen for a Slack/email summary. Meta's status webhook should point at this app, not n8n, so delivery state and opt-outs are stored next to the contacts.
+`portfolio/n8n/whatsapp-excel-automation.json` (see `portfolio/n8n/README.md`) orchestrates the API:
+`POST /api/imports` → `POST /api/imports/{id}/commit` → `POST /api/campaigns/audience-preview` → `GET /api/templates` → `POST /api/campaigns` → `POST /api/campaigns/{id}/start` → poll `GET /api/campaigns/{id}` → `GET /api/campaigns/{id}/export`.
+
+Requests carry `X-Automation: n8n`. SheetReach stores it on the campaign (`created_via`, alphanumeric values only) and in the activity log, so users can see which campaigns an automation started.
+
+Design rule: n8n holds **no business logic and no WhatsApp credentials**. Cleaning, consent, Do Not Contact and sending stay in SheetReach, so the UI and the automation can never disagree. Meta's status webhook points at SheetReach, not n8n, so delivery state and opt-outs are stored next to the contacts.
+
+See `portfolio/screenshots/10-architecture.png` for the diagram (demo provider vs official Cloud API).

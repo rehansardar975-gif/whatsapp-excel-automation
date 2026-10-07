@@ -10,12 +10,12 @@ try { pw = require("playwright"); } catch { pw = require(`${execSync("npm root -
 
 const BASE = process.argv[2] || "http://localhost:8000";
 const OUT = new URL("../portfolio/screenshots/", import.meta.url).pathname;
-mkdirSync(OUT, { recursive: true });
+mkdirSync(`${OUT}extra`, { recursive: true });
 const results = [];
 const check = (name, ok, detail = "") => { results.push({ name, ok, detail }); console.log(`${ok ? "PASS" : "FAIL"}  ${name}${detail ? " — " + detail : ""}`); };
 
 const browser = await pw.chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
-const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, acceptDownloads: true });
+const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2, acceptDownloads: true, timezoneId: "Asia/Dubai" });
 const page = await ctx.newPage();
 const consoleErrors = [];
 // the 422 from the deliberately invalid upload is expected; anything else is a bug
@@ -39,7 +39,7 @@ await page.goto(`${BASE}/import`);
 await page.getByTestId("file-input").setInputFiles({ name: "notes.pdf", mimeType: "application/pdf", buffer: Buffer.from("%PDF") });
 await page.getByTestId("upload-error").waitFor();
 check("Unsupported file shows friendly error", (await text('[data-testid="upload-error"]')).includes("Excel (.xlsx) or CSV"));
-await shot("02-upload");
+await shot("extra/upload-error");
 
 // 3 Upload sample Excel -> automatic validation
 await page.getByTestId("sample-sample-contacts-1250.xlsx").click();
@@ -49,7 +49,7 @@ const ready = await text('[data-testid="sum-ready"]');
 const dups = await text('[data-testid="sum-duplicate"]');
 check("Excel upload detected and analysed", total === "1,250", `rows=${total} ready=${ready} duplicates=${dups}`);
 check("Phone column auto-mapped", (await page.getByTestId("map-phone").inputValue()) === "Mobile");
-await shot("03-validation");
+await shot("02-upload-validation");
 await page.getByText("Duplicates removed").click();
 check("Filter rows by result", (await page.locator('[data-testid="import-table"] tbody tr').count()) === Number(dups));
 await page.getByTestId("import-commit").click();
@@ -69,7 +69,7 @@ await page.getByText("No contacts match").waitFor();
 check("Search empty state", true);
 await page.getByTestId("contact-search").fill("");
 await page.waitForTimeout(600);
-await shot("04-contacts");
+await shot("03-contacts");
 const dl = page.waitForEvent("download");
 await page.getByTestId("export-contacts").click();
 check("Contacts export downloads", (await (await dl).suggestedFilename()) === "contacts.xlsx");
@@ -90,7 +90,7 @@ await page.waitForTimeout(500);
 check("Live personalised preview", (await text('[data-testid="chat-preview"]')).includes("Hi Sara, Eid Mubarak! As a thank-you to Palm Grill Kitchen"));
 await page.getByTestId("tpl-save").click();
 await page.waitForTimeout(600);
-await shot("05-message");
+await shot("04-message-builder");
 await page.getByTestId("tpl-body").fill("Hi {{nickname}}");
 await page.getByTestId("tpl-errors").waitFor();
 check("Unknown field is flagged", (await text('[data-testid="tpl-errors"]')).includes("Unknown field"));
@@ -108,14 +108,14 @@ await page.locator('[data-testid^="pick-template-"]').filter({ hasText: "Eid off
 await page.getByTestId("next-2").click();
 await page.getByTestId("campaign-review").waitFor();
 check("Review shows contact count + demo notice", (await text('[data-testid="review-ready"]')).startsWith(ready));
-await shot("06-campaign-review");
+await shot("05-campaign-review");
 
 // 7 Processing
 await page.getByTestId("start-campaign").click();
 await page.getByTestId("progress-card").waitFor();
 await page.waitForTimeout(6000);
 check("Live progress while sending", (await text('[data-testid="progress-title"]')).startsWith("Sending"));
-await shot("07-processing");
+await shot("extra/ui-campaign-processing");
 await page.getByTestId("pause-btn").click();
 await page.getByTestId("resume-btn").waitFor();
 check("Pause works", (await text('[data-testid="progress-title"]')).startsWith("Paused"));
@@ -124,7 +124,7 @@ await page.waitForFunction(() => document.querySelector('[data-testid="progress-
 check("Campaign completes", true);
 await page.evaluate(() => document.querySelector("main").scrollTo(0, 0));
 await page.waitForTimeout(800);
-await shot("08-results");
+await shot("extra/ui-campaign-results");
 const kpi = async (id) => Number((await text(`[data-testid="${id}"] p.font-num`)).replace(/,/g, ""));
 const [p, s, d, f, k] = [await kpi("kpi-processed"), await kpi("kpi-sent"), await kpi("kpi-delivered"), await kpi("kpi-failed"), await kpi("kpi-skipped")];
 check("Results add up (sent + failed + skipped = processed)", s + f + k === p && d <= s && p > 0, `processed=${p} sent=${s} delivered=${d} failed=${f} skipped=${k}`);
@@ -146,7 +146,7 @@ check("Opt-outs excluded from future campaigns", !!dnc && dnc.count > 0, `${sup.
 await page.goto(`${BASE}/collect`);
 await page.getByTestId("col-run").click();
 await page.getByTestId("col-steps").waitFor();
-await shot("09-collection");
+await shot("extra/contact-collection");
 await page.getByTestId("col-add").click();
 await page.getByText(/View \d+ added contacts/).waitFor();
 check("Collected contacts added as Needs opt-in", true);
@@ -154,10 +154,10 @@ check("Collected contacts added as Needs opt-in", true);
 // 10 Activity + integration
 await page.goto(`${BASE}/activity`);
 await page.getByTestId("activity-list").waitFor();
-await shot("10-activity");
+await shot("extra/activity-log");
 await page.goto(`${BASE}/integration`);
 await page.getByText("Production automation flow").waitFor();
-await shot("11-integration");
+await shot("extra/integration-page");
 
 // 11 Responsive (phone)
 const m = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
@@ -170,7 +170,7 @@ for (const path of ["/", "/import", "/contacts", "/messages", "/campaigns/new", 
 }
 await mp.goto(BASE + "/");
 await mp.waitForTimeout(900);
-await mp.screenshot({ path: `${OUT}12-mobile-dashboard.png` });
+await mp.screenshot({ path: `${OUT}extra/mobile-dashboard.png` });
 await mp.getByTestId("mobile-menu-btn").click();
 check("Mobile menu opens", await mp.getByTestId("nav-contacts").last().isVisible());
 

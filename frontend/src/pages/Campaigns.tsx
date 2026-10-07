@@ -5,7 +5,7 @@ import { useLoad } from "@/lib/useLoad";
 import { fmt, fmtDateTime } from "@/lib/format";
 import type { Campaign } from "@/lib/types";
 import { Button, EmptyState, ErrorState, PageHeader, Spinner } from "@/components/ui";
-import StatusBadge from "@/components/StatusBadge";
+import StatusBadge, { ViaBadge } from "@/components/StatusBadge";
 import CampaignBar from "@/components/CampaignBar";
 
 export default function Campaigns() {
@@ -26,7 +26,7 @@ export default function Campaigns() {
                 {data.map((c) => (
                   <tr key={c.id} className="cursor-pointer border-t border-slate-100 hover:bg-slate-50/60" onClick={() => nav(`/campaigns/${c.id}`)}>
                     <td className="td"><Link to={`/campaigns/${c.id}`} className="font-semibold text-slate-800 hover:text-teal-700">{c.name}</Link><p className="text-xs text-slate-400">{c.template_name} · {fmt(c.report.total)} contacts</p></td>
-                    <td className="td"><StatusBadge status={c.status} /></td>
+                    <td className="td"><div className="flex flex-wrap gap-1"><StatusBadge status={c.status} /><ViaBadge via={c.created_via} /></div></td>
                     <td className="td"><CampaignBar r={c.report} /><p className="mt-1 font-num text-xs text-slate-400">{c.report.progress}% processed</p></td>
                     <td className="td text-right font-num">{fmt(c.report.sent)}</td>
                     <td className="td text-right font-num text-emerald-700">{fmt(c.report.delivered)}</td>

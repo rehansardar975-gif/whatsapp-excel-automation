@@ -82,6 +82,7 @@ class Campaign(Base):
     audience: Mapped[dict] = mapped_column(JSON, default=dict)
     status: Mapped[str] = mapped_column(String(20), default="draft")  # draft | running | paused | completed
     provider: Mapped[str] = mapped_column(String(20), default="demo")
+    created_via: Mapped[str] = mapped_column(String(20), default="app")  # app | n8n | api
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

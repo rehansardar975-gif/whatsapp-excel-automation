@@ -1,8 +1,15 @@
+from datetime import timezone
+
 from .models import Activity, Campaign, Contact, Message, Template
 
 
 def iso(dt):
-    return dt.isoformat() if dt else None
+    """ISO-8601 with an explicit UTC offset. SQLite returns naive datetimes; all stored times are UTC."""
+    if not dt:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.isoformat()
 
 
 def contact_out(c: Contact, eligible: bool, reason: str, suppressed: bool) -> dict:
@@ -30,7 +37,7 @@ def message_out(m: Message) -> dict:
 
 def campaign_out(c: Campaign, report: dict | None = None) -> dict:
     d = {"id": c.id, "name": c.name, "template_id": c.template_id, "template_name": c.template_name,
-         "template_body": c.template_body, "audience": c.audience, "status": c.status, "provider": c.provider,
+         "template_body": c.template_body, "audience": c.audience, "status": c.status, "provider": c.provider, "created_via": c.created_via,
          "created_at": iso(c.created_at), "started_at": iso(c.started_at), "completed_at": iso(c.completed_at)}
     if report is not None:
         d["report"] = report

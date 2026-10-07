@@ -7,7 +7,7 @@ import { useLoad } from "@/lib/useLoad";
 import { fmt, fmtDateTime, pct, prettyPhone } from "@/lib/format";
 import type { Campaign, Message, Reason } from "@/lib/types";
 import { Button, Details, ErrorState, KpiCard, PageHeader, Spinner, Tabs } from "@/components/ui";
-import StatusBadge, { DemoModePill } from "@/components/StatusBadge";
+import StatusBadge, { DemoModePill, ViaBadge } from "@/components/StatusBadge";
 import CampaignBar, { Legend } from "@/components/CampaignBar";
 
 type F = "" | "sent" | "delivered" | "failed" | "skipped" | "queued" | "opted_out";
@@ -61,7 +61,7 @@ export default function CampaignDetail() {
               <p className="text-sm text-slate-500">{done ? `Finished ${fmtDateTime(c.completed_at)}` : `${r.progress}% processed`}{r.retried > 0 && ` · ${fmt(r.retried)} retried automatically`}</p>
             </div>
           </div>
-          <StatusBadge status={c.status} /> 
+          <div className="flex gap-2"><ViaBadge via={c.created_via} /><StatusBadge status={c.status} /></div>
         </div>
         <div className="mt-5"><CampaignBar r={r} /></div>
         <div className="mt-2"><Legend r={r} /></div>
@@ -100,7 +100,7 @@ export default function CampaignDetail() {
                   <td className="td"><p className="font-semibold text-slate-800">{m.contact_name || "—"}</p><p className="font-num text-xs text-slate-400">{prettyPhone(m.phone)}</p></td>
                   <td className="td"><p className="line-clamp-2 text-xs text-slate-500" title={m.body}>{m.body}</p></td>
                   <td className="td">
-                    <div className="flex flex-wrap gap-1"><StatusBadge status={m.status} />{m.opted_out && <StatusBadge status="do_not_contact" />}</div>
+                    <div className="flex flex-wrap gap-1"><StatusBadge status={m.status === "queued" && m.retry_count > 0 ? "retrying" : m.status} />{m.opted_out && <StatusBadge status="do_not_contact" />}</div>
                     {m.reason && <p className="mt-1 max-w-[260px] text-xs text-slate-500">{m.reason}</p>}
                     {(m.error_code || m.provider_message_id) && <p className="mt-0.5 font-num text-[10px] text-slate-400" title="Technical detail">{m.error_code ? `code ${m.error_code}` : ""}{m.error_code && m.provider_message_id ? " · " : ""}{m.provider_message_id ? `id ${m.provider_message_id.slice(0, 14)}…` : ""}</p>}
                   </td>

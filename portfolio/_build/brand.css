@@ -1,0 +1,16 @@
+/* Portfolio visual system (series P01–P07). P07 accent: teal. */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+:root { --night:#0B0F17; --night2:#141B2D; --canvas:#F5F6FA; --ink:#0F172A; --ink2:#334155; --muted:#64748B; --line:#E2E8F0;
+  --series:#6366F1; --accent:#14B8A6; --accent-dark:#0F766E; --accent-soft:#CCFBF1; --n8n:#EA4B71; --warn:#F59E0B; --bad:#EF4444; }
+* { box-sizing:border-box; margin:0; padding:0 }
+body { font-family:Inter,sans-serif; color:var(--ink); -webkit-font-smoothing:antialiased }
+h1,h2,h3 { font-family:'Plus Jakarta Sans',Inter,sans-serif; letter-spacing:-.025em }
+.eyebrow { font:600 15px 'JetBrains Mono',monospace; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-dark) }
+.dark .eyebrow { color:#5EEAD4 }
+.badge { display:inline-flex; align-items:center; gap:8px; font:600 13px 'JetBrains Mono',monospace; letter-spacing:.08em; text-transform:uppercase; padding:7px 12px; border-radius:999px }
+.b-demo { background:var(--accent-soft); color:var(--accent-dark) } .b-n8n { background:#FFE4EC; color:#9F1239 } .b-ready { background:#E0E7FF; color:#3730A3 }
+.frame { background:#fff; border:1px solid var(--line); border-radius:14px; box-shadow:0 20px 50px rgba(15,23,42,.12); overflow:hidden }
+.frame .bar { height:34px; background:#F1F5F9; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:7px; padding:0 14px; font:500 12px 'JetBrains Mono'; color:var(--muted) }
+.frame .bar i { width:10px; height:10px; border-radius:50%; background:#CBD5E1 }
+.frame img { display:block; width:100% }
+.glow { position:absolute; width:1000px; height:1000px; border-radius:50%; right:-300px; top:-360px; background:radial-gradient(circle,rgba(20,184,166,.24),rgba(20,184,166,0) 62%); pointer-events:none }

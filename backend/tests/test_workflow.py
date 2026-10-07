@@ -212,3 +212,11 @@ def test_dashboard_and_activity(fresh):
     assert d["mode"] == "demo" and d["contacts"] > 0 and d["campaigns"] == 1 and d["opt_outs"] >= 1
     a = fresh.get("/api/activity", params={"type": "import"}).json()
     assert a["total"] >= 1 and all(i["type"] == "import" for i in a["items"])
+
+
+def test_timestamps_carry_utc_offset(fresh):
+    """Browsers in other time zones must not read UTC times as local time."""
+    c = fresh.get("/api/campaigns").json()[0]
+    assert c["created_at"].endswith("+00:00") and c["completed_at"].endswith("+00:00")
+    a = fresh.get("/api/activity").json()["items"][0]
+    assert a["created_at"].endswith("+00:00")

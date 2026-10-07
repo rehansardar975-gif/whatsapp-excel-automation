@@ -1,3 +1,4 @@
+import { Workflow } from "lucide-react";
 import { cn } from "./ui";
 
 /** Every status the user can see, in business language. */
@@ -12,6 +13,7 @@ const STATUS: Record<string, { label: string; cls: string }> = {
   existing: { label: "Already saved", cls: "bg-slate-100 text-slate-600 border-slate-200" },
   // messages
   queued: { label: "Queued", cls: "bg-slate-100 text-slate-600 border-slate-200" },
+  retrying: { label: "Retrying", cls: "bg-violet-50 text-violet-700 border-violet-200" },
   processing: { label: "Sending…", cls: "bg-sky-50 text-sky-700 border-sky-200" },
   sent: { label: "Sent", cls: "bg-teal-50 text-teal-700 border-teal-200" },
   delivered: { label: "Delivered", cls: "bg-emerald-50 text-emerald-700 border-emerald-200" },
@@ -32,6 +34,16 @@ export default function StatusBadge({ status, className }: { status: string; cla
     <span className={cn("inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold", s.cls, className)}>
       {status === "processing" || status === "running" ? <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-sky-500" /> : null}
       {s.label}
+    </span>
+  );
+}
+
+export function ViaBadge({ via }: { via?: string }) {
+  if (!via || via === "app") return null;
+  return (
+    <span title="This campaign was created and started by an automation workflow" data-testid="via-badge"
+      className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-orange-200 bg-orange-50 px-2.5 py-0.5 text-xs font-semibold text-orange-700">
+      <Workflow className="h-3 w-3" />Started by {via}
     </span>
   );
 }

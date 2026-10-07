@@ -1,0 +1,790 @@
+{
+  "name": "SheetReach — Excel to WhatsApp campaign (n8n)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 1 · Get the contact file\nRun manually, or POST `{\"fileUrl\": \"https://…/contacts.xlsx\"}` to the webhook (e.g. from Google Drive, a form or a CRM export).\n\n**Edit `Settings` first** — in Docker use `http://host.docker.internal:8000`.",
+        "height": 560,
+        "width": 620
+      },
+      "id": "04caae06-a89b-455c-adde-720466b6a682",
+      "name": "Note 0",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 2 · Clean, validate, protect\nSheetReach detects columns, normalises numbers, removes duplicates and checks opt-in + the Do Not Contact list. Only clean contacts are imported.",
+        "height": 560,
+        "width": 1260,
+        "color": 5
+      },
+      "id": "58cead94-6b2e-447e-84b3-ccf5f80568f7",
+      "name": "Note 1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        580,
+        40
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3 · Personalise & send\nOne message, personalised per contact. Sent through SheetReach's WhatsApp provider: **Demo provider** by default (simulated, nothing leaves the app) or the official **WhatsApp Business Cloud API** when the client's credentials are configured.",
+        "height": 460,
+        "width": 900,
+        "color": 4
+      },
+      "id": "8114d955-552b-4d7d-82e5-586f5ff05ad0",
+      "name": "Note 2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -60,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 4 · Track & report\nPolls progress until the queue is done, downloads the Excel results and builds the final report.",
+        "height": 460,
+        "width": 1220,
+        "color": 6
+      },
+      "id": "7ae81109-41d0-4e5b-a53f-5167d3ce7253",
+      "name": "Note 3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        860,
+        700
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "f9ab9ec2-155a-45ed-b40f-8fe60f20ee8f",
+      "name": "Run manually",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sheetreach-new-contacts",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "58e55953-3aef-43b6-bc51-55040a3c61dc",
+      "name": "New file webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        450
+      ],
+      "webhookId": "e53dff92-7404-4936-99fa-a9830e868a50"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eade9812-f06a-49b8-bc27-c16f961869bf",
+              "name": "sheetreachUrl",
+              "value": "http://localhost:8000",
+              "type": "string"
+            },
+            {
+              "id": "7afbc7bb-4195-440e-8446-409cb5b38622",
+              "name": "fileUrl",
+              "value": "={{ $json.body?.fileUrl || '/api/samples/sample-contacts-1250.xlsx' }}",
+              "type": "string"
+            },
+            {
+              "id": "0dbab83a-343c-4f85-b4b0-336958192d77",
+              "name": "defaultCountry",
+              "value": "AE",
+              "type": "string"
+            },
+            {
+              "id": "0a78b972-a7ee-49da-a9c6-779e75e777f7",
+              "name": "messageName",
+              "value": "New catalogue announcement",
+              "type": "string"
+            },
+            {
+              "id": "df090833-ca18-4953-9208-117ddd0995cb",
+              "name": "consentConfirmed",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "20d532bd-35c7-4481-b766-ba517304d604",
+              "name": "campaignName",
+              "value": "=Catalogue update — {{ $now.toFormat('d LLL, HH:mm') }}",
+              "type": "string"
+            },
+            {
+              "id": "60f111c7-bb0c-4304-86cd-973738faccda",
+              "name": "checkEverySeconds",
+              "value": 3,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ba9d9e9e-bd17-4920-9f8c-ff1d3695ed67",
+      "name": "Settings",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        375
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.fileUrl.startsWith('http') ? $json.fileUrl : $json.sheetreachUrl + $json.fileUrl }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "e76efed8-e615-4c9b-8182-b95e047c937f",
+      "name": "Download contact file",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        375
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Settings').first().json.sheetreachUrl }}/api/imports",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Automation",
+              "value": "n8n"
+            }
+          ]
+        },
+        "options": {},
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "default_country",
+              "value": "={{ $('Settings').first().json.defaultCountry }}"
+            }
+          ]
+        }
+      },
+      "id": "c9587b38-046b-4131-9848-1ce5c52969c4",
+      "name": "Upload & clean in SheetReach",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        660,
+        375
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turn SheetReach's analysis into a short, readable quality report.\nconst r = $input.first().json;\nconst s = r.summary || {};\nif (s.error) {\n  throw new Error(`SheetReach could not read \"${r.file_name}\": ${s.error}`);\n}\nreturn [{ json: {\n  import_id: r.id,\n  file: r.file_name,\n  rows_in_file: s.total,\n  ready_to_message: s.ready,\n  need_opt_in: s.needs_opt_in,\n  duplicates_removed: s.duplicate,\n  invalid_numbers: s.invalid,\n  missing_numbers: s.missing,\n  do_not_contact: s.do_not_contact,\n  already_saved: s.existing,\n  will_import: s.will_import,\n  phone_column: r.mapping.phone,\n}}];"
+      },
+      "id": "1d2b6e71-710c-4b28-b663-5adb4d953e16",
+      "name": "Data quality report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        375
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "5b8f85f7-6a59-4052-9daa-2fd23979882e",
+              "leftValue": "={{ $json.will_import }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "127aad22-0a27-487e-8351-321e4b98ac8a",
+      "name": "New contacts to import?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        375
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Settings').first().json.sheetreachUrl }}/api/imports/{{ $json.import_id }}/commit",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Automation",
+              "value": "n8n"
+            }
+          ]
+        },
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ consent_confirmed: $('Settings').first().json.consentConfirmed }) }}"
+      },
+      "id": "351711db-6747-4cd2-a190-9560f12562ae",
+      "name": "Import clean contacts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Settings').first().json.sheetreachUrl }}/api/campaigns/audience-preview",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Automation",
+              "value": "n8n"
+            }
+          ]
+        },
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ batch_id: $('Data quality report').first().json.import_id }) }}"
+      },
+      "id": "5e06766b-d71b-428e-b047-bc08d7acd9bb",
+      "name": "DNC & opt-in check",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "2798cea7-2fe4-4450-a245-a679020bee70",
+              "leftValue": "={{ $json.ready }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "71698cc7-bf98-4d51-90c3-9c40fa04aa6f",
+      "name": "Anyone ready to message?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Settings').first().json.sheetreachUrl }}/api/templates",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Automation",
+              "value": "n8n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d2847a01-92ac-432c-9bdc-7ec3daf8b0de",
+      "name": "Load message templates",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        80,
+        925
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Choose the message template named in Settings.\nconst wanted = $('Settings').first().json.messageName;\nconst all = $input.all().map(i => i.json);\nconst t = all.find(x => x.name === wanted);\nif (!t) {\n  throw new Error(`Message \"${wanted}\" not found. Available: ${all.map(x => x.name).join(', ')}`);\n}\nreturn [{ json: { template_id: t.id, template_name: t.name, personalised_fields: t.fields, body: t.body } }];"
+      },
+      "id": "767f9540-a7b8-4f60-ada8-01387a45368b",
+      "name": "Pick message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        925
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Settings').first().json.sheetreachUrl }}/api/campaigns",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Automation",
+              "value": "n8n"
+            }
+          ]
+        },
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ name: $('Settings').first().json.campaignName, template_id: $json.template_id, audience: { batch_id: $('Data quality report').first().json.import_id } }) }}"
+      },
+      "id": "d27ca039-8d47-4b55-85c0-c304820b2828",
+      "name": "Create personalised campaign",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        925
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Settings').first().json.sheetreachUrl }}/api/campaigns/{{ $json.id }}/start",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Automation",
+              "value": "n8n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2842a267-f105-4a45-a55b-1a8edee944e8",
+      "name": "Start sending (WhatsApp provider)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        740,
+        925
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $('Settings').first().json.checkEverySeconds }}"
+      },
+      "id": "12504ed0-e49b-453d-a8a6-f7c15381dea4",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        960,
+        925
+      ],
+      "webhookId": "09fce04f-43a3-4f9b-b86b-56c02b1b4af4"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Settings').first().json.sheetreachUrl }}/api/campaigns/{{ $('Start sending (WhatsApp provider)').first().json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Automation",
+              "value": "n8n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5e2b6928-7cc3-4a63-a996-b88e98caa8fa",
+      "name": "Check progress",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        925
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "47c337b7-f8f9-410b-94f5-8456ef3c1486",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "completed",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "843cd797-bf09-4399-b314-6c540ac3b6ee",
+      "name": "Campaign finished?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        925
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('Settings').first().json.sheetreachUrl }}/api/campaigns/{{ $json.id }}/export?format=xlsx",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Automation",
+              "value": "n8n"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "c52b7ccc-8512-420f-87eb-0d36e81dc74e",
+      "name": "Download results (Excel)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1580,
+        850
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// One clear summary of the whole run, with the Excel results attached.\nconst s = $('Settings').first().json;\nconst q = $('Data quality report').first().json;\nconst c = $('Campaign finished?').first().json;\nconst r = c.report;\nconst demo = c.provider === 'demo';\nreturn [{\n  json: {\n    result: `Campaign \"${c.name}\" complete`,\n    whatsapp_provider: demo ? 'Demo provider — sending simulated, no real WhatsApp messages were sent'\n                            : 'WhatsApp Business Cloud API',\n    file: q.file,\n    cleaning: {\n      rows_in_file: q.rows_in_file,\n      duplicates_removed: q.duplicates_removed,\n      invalid_numbers: q.invalid_numbers,\n      missing_numbers: q.missing_numbers,\n      blocked_do_not_contact: q.do_not_contact,\n      imported: q.will_import,\n    },\n    campaign: {\n      contacts: r.total, processed: r.processed, sent: r.sent, delivered: r.delivered,\n      failed: r.failed, skipped: r.skipped, opted_out: r.opted_out, retried: r.retried,\n    },\n    why_failed: r.failed_reasons,\n    why_skipped: r.skipped_reasons,\n    open_in_sheetreach: `${s.sheetreachUrl}/campaigns/${c.id}`,\n  },\n  binary: $input.first().binary,\n}];"
+      },
+      "id": "82cf4645-51d9-4ef9-a802-5cf4ecd5a4a9",
+      "name": "Final report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1800,
+        850
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ends the run cleanly when there is nobody new to message.\nconst q = $('Data quality report').first().json;\nreturn [{ json: {\n  result: 'No campaign started',\n  reason: q.will_import === 0\n    ? 'Every contact in this file is a duplicate, already saved, invalid or on the Do Not Contact list.'\n    : 'No imported contact has a WhatsApp opt-in on record yet.',\n  file: q.file,\n  rows_in_file: q.rows_in_file,\n}}];"
+      },
+      "id": "7dfa0f72-ea1b-46f9-b499-7073270a7dde",
+      "name": "Nothing new to send",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        550
+      ]
+    }
+  ],
+  "connections": {
+    "Run manually": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New file webhook": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Settings": {
+      "main": [
+        [
+          {
+            "node": "Download contact file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download contact file": {
+      "main": [
+        [
+          {
+            "node": "Upload & clean in SheetReach",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload & clean in SheetReach": {
+      "main": [
+        [
+          {
+            "node": "Data quality report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data quality report": {
+      "main": [
+        [
+          {
+            "node": "New contacts to import?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Import clean contacts": {
+      "main": [
+        [
+          {
+            "node": "DNC & opt-in check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DNC & opt-in check": {
+      "main": [
+        [
+          {
+            "node": "Anyone ready to message?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load message templates": {
+      "main": [
+        [
+          {
+            "node": "Pick message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick message": {
+      "main": [
+        [
+          {
+            "node": "Create personalised campaign",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create personalised campaign": {
+      "main": [
+        [
+          {
+            "node": "Start sending (WhatsApp provider)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start sending (WhatsApp provider)": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Check progress",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check progress": {
+      "main": [
+        [
+          {
+            "node": "Campaign finished?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download results (Excel)": {
+      "main": [
+        [
+          {
+            "node": "Final report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New contacts to import?": {
+      "main": [
+        [
+          {
+            "node": "Import clean contacts",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Nothing new to send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anyone ready to message?": {
+      "main": [
+        [
+          {
+            "node": "Load message templates",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Nothing new to send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Campaign finished?": {
+      "main": [
+        [
+          {
+            "node": "Download results (Excel)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

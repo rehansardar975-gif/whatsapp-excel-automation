@@ -68,13 +68,13 @@ def audience_preview(db: Session, audience: dict) -> dict:
             "sample": contact_dict(ready[0]) if ready else None}
 
 
-def create_campaign(db: Session, name: str, template: Template, audience: dict) -> Campaign:
+def create_campaign(db: Session, name: str, template: Template, audience: dict, via: str = "app") -> Campaign:
     sup = suppressed_set(db)
     contacts = audience_contacts(db, audience)
     if not any(eligibility(c, sup)[0] for c in contacts):
         raise ValueError("No contacts in this audience can receive messages.")
     camp = Campaign(name=name, template_id=template.id, template_name=template.name, template_body=template.body,
-                    audience=audience, provider=get_provider().name, status="draft")
+                    audience=audience, provider=get_provider().name, status="draft", created_via=via)
     db.add(camp)
     db.flush()
     for c in contacts:
@@ -85,7 +85,7 @@ def create_campaign(db: Session, name: str, template: Template, audience: dict) 
             body=templating.render(template.body, contact_dict(c), template.fallbacks),
             status="queued" if ok else "skipped", reason="" if ok else why))
     queued = sum(1 for c in contacts if eligibility(c, sup)[0])
-    activity.log(db, "campaign", f"Campaign “{name}” created — {queued} messages queued, {len(contacts) - queued} skipped",
+    activity.log(db, "campaign", f"Campaign “{name}” created{_via(via)} — {queued} messages queued, {len(contacts) - queued} skipped",
                  "info", campaign_id=camp.id)
     db.commit()
     return camp
@@ -96,14 +96,18 @@ _runners: dict[int, threading.Thread] = {}
 _lock = threading.Lock()
 
 
-def start(db: Session, camp: Campaign) -> None:
+def _via(via: str) -> str:
+    return f" via {via}" if via and via != "app" else ""
+
+
+def start(db: Session, camp: Campaign, via: str = "app") -> None:
     if camp.status == "completed":
         raise ValueError("This campaign is already complete.")
     if camp.status != "running":
         first = camp.started_at is None
         camp.status = "running"
         camp.started_at = camp.started_at or _now()
-        activity.log(db, "campaign", f"Campaign “{camp.name}” {'started' if first else 'resumed'}", "info", campaign_id=camp.id)
+        activity.log(db, "campaign", f"Campaign “{camp.name}” {'started' if first else 'resumed'}{_via(via)}", "info", campaign_id=camp.id)
         db.commit()
     launch(camp.id)
 

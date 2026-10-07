@@ -15,7 +15,7 @@ export interface Report {
 export interface Campaign {
   id: number; name: string; template_id: number | null; template_name: string; template_body: string;
   audience: { batch_id?: number; country?: string }; status: "draft" | "running" | "paused" | "completed";
-  provider: string; created_at: string; started_at: string | null; completed_at: string | null; report: Report;
+  provider: string; created_via: string; created_at: string; started_at: string | null; completed_at: string | null; report: Report;
 }
 export interface Message {
   id: number; contact_name: string; company: string; phone: string; body: string; status: string; reason: string;

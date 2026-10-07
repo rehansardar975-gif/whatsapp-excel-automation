@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -6,6 +6,7 @@ from .. import config
 from ..database import get_db
 from ..models import ImportBatch
 from ..services import importer
+from .campaigns import via_of
 
 router = APIRouter(prefix="/api/imports", tags=["imports"])
 
@@ -73,9 +74,9 @@ class CommitIn(BaseModel):
 
 
 @router.post("/{bid}/commit")
-def commit(bid: int, body: CommitIn, db: Session = Depends(get_db)):
+def commit(bid: int, body: CommitIn, request: Request, db: Session = Depends(get_db)):
     batch = _get_preview_batch(db, bid)
     try:
-        return importer.commit(db, batch, body.consent_confirmed)
+        return importer.commit(db, batch, body.consent_confirmed, via_of(request))
     except importer.ImportErrorForUser as e:
         raise HTTPException(422, str(e))

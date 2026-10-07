@@ -2,7 +2,9 @@
 
 **Portfolio Project 07 · Portfolio Demo · Sample data only · Demo Mode — WhatsApp Business API Ready**
 
-Upload a contact list from Excel or CSV. The app cleans it, shows you who can be messaged, sends a personalised WhatsApp message through a queue with retries and opt-out protection, and reports exactly what happened.
+Upload a contact list from Excel or CSV. The app cleans it, shows you who can be messaged, sends a personalised WhatsApp message through a queue with retries and opt-out protection, and reports exactly what happened. A **real n8n workflow** can run the whole process automatically.
+
+**Watch:** [`portfolio/video/P07-sheetreach-n8n-demo.mp4`](portfolio/video/P07-sheetreach-n8n-demo.mp4) (2 min) · **Case study:** [`portfolio/CASE-STUDY.md`](portfolio/CASE-STUDY.md) · **Slides:** [`portfolio/CLIENT-PRESENTATION.pdf`](portfolio/CLIENT-PRESENTATION.pdf)
 
 > This is a portfolio project. All contacts and businesses are fictional, and phone numbers are randomly generated. **No real WhatsApp messages are sent:** the final send step is simulated in Demo Mode. The live WhatsApp Cloud API provider is implemented but was not run against Meta.
 
@@ -52,9 +54,19 @@ The first start creates `backend/data/app.db` with fictional demo data: 175 cont
 
 Tests:
 ```bash
-cd backend && ../.venv/bin/python -m pytest -q            # 32 API/unit tests
+cd backend && ../.venv/bin/python -m pytest -q            # 41 API/unit tests
 node e2e/journey.mjs http://localhost:8000                 # 33 browser checks + screenshots (needs Playwright/Chromium)
+N8N_EMAIL=… N8N_PASSWORD=… node e2e/n8n-run.mjs <workflowId>   # runs the n8n workflow in the n8n editor, checks success
 ```
+
+## What is real and what needs credentials
+| Part | Status |
+|---|---|
+| Excel/CSV import, cleaning, Do Not Contact, personalisation, queue, retries, reports, exports | Built and tested |
+| n8n workflow | Built and executed (n8n 2.42.4) |
+| Demo WhatsApp provider | Built; **simulated** sending on fictional data (default) |
+| WhatsApp Cloud API provider | Built and unit-tested with mocked Meta responses. **Needs the client's** Meta Business account, phone number ID, access token, app secret and approved templates. Not run against Meta |
+| Status webhook (`/api/webhooks/whatsapp`) | Built and tested with Meta-format payloads; needs a public URL registered in the client's Meta app |
 
 ## Architecture (short)
 React + TypeScript + Tailwind (Vite) → FastAPI → SQLAlchemy (SQLite by default; Postgres via `DATABASE_URL`) → `WhatsAppProvider`:
@@ -77,12 +89,12 @@ See [ARCHITECTURE.md](ARCHITECTURE.md).
   | 130429 | Sending too fast | Shown as "Messaging temporarily paused"; retried |
 - **Status webhook** `GET/POST /api/webhooks/whatsapp`: verify-token handshake, optional `X-Hub-Signature-256` check, and out-of-order safety (a late "sent" never overwrites "delivered").
 
-## n8n integration
-The product doesn't need n8n to work, but every step is an API call, so n8n can run it without anyone opening the UI:
+## n8n automation (real, tested)
+[`portfolio/n8n/whatsapp-excel-automation.json`](portfolio/n8n/whatsapp-excel-automation.json) is an importable n8n workflow that runs the full process through the SheetReach API:
 
-`Google Drive / email trigger (new Excel)` → `HTTP POST /api/imports` (file) → `POST /api/imports/{id}/commit` → `POST /api/campaigns` → `POST /api/campaigns/{id}/start` → *(Meta → `/api/webhooks/whatsapp`)* → `GET /api/campaigns/{id}` → Slack / email summary.
+new file (manual run or webhook) → upload & clean → data-quality gate → import → DNC & opt-in check → pick message → create personalised campaign → start sending → wait/check-progress loop → download Excel results → final report
 
-Interactive API docs: `http://localhost:8000/docs`. No n8n workflow file is included; this flow is documented, not built.
+It was executed successfully in n8n 2.42.4 against the running app. Campaigns it starts show **Started by n8n**. Setup, including the Docker URL (`http://host.docker.internal:8000`), is in [`portfolio/n8n/README.md`](portfolio/n8n/README.md). Interactive API docs: `http://localhost:8000/docs`.
 
 ## Data handling
 - Raw uploaded rows are kept only until import, then deleted from the upload record.
@@ -112,6 +124,11 @@ backend/app/
 backend/tests/            pytest suite
 frontend/src/pages/       Dashboard, ImportContacts, Contacts, Collection, Messages, NewCampaign, CampaignDetail, ActivityLog, Integration
 e2e/journey.mjs           browser test of the full journey (+ screenshots)
+e2e/n8n-run.mjs           executes the n8n workflow in the n8n editor (+ screenshots)
+e2e/record-demo.mjs       records the demo video from the running apps
 sample-data/              fictional sample files (1,250-row Excel, messy CSV)
-portfolio/                screenshots, demo script
+portfolio/n8n/            importable n8n workflow + setup guide
+portfolio/screenshots/    10 portfolio images (+ extra/)
+portfolio/video/          demo video (MP4)
+portfolio/                CASE-STUDY.md, CLIENT-PRESENTATION.pdf, DEMO-SCRIPT.md, _build/ (slide + diagram sources)
 ```
