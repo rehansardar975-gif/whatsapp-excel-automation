@@ -1,0 +1,88 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="brand.css"><style>
+@page{size:A4;margin:18mm 18mm 20mm} body{font-size:11pt;line-height:1.55;color:#1e293b}
+.head{background:#0B0F17;color:#fff;padding:26px 30px;border-radius:12px;margin-bottom:18px;position:relative;overflow:hidden}
+.head p{font:600 9pt 'JetBrains Mono';letter-spacing:.18em;color:#5EEAD4} .head h1{font-size:24pt;margin-top:8px;line-height:1.15}
+h1{display:none} h2{font-size:15pt;margin:20px 0 6px;color:#0F172A;border-bottom:2px solid #CCFBF1;padding-bottom:4px}
+p,li{margin:5px 0} ul{padding-left:20px} blockquote{background:#F1F5F9;border-left:4px solid #14B8A6;padding:8px 12px;margin:10px 0;font-size:10pt}
+table{border-collapse:collapse;width:100%;font-size:10pt;margin:8px 0} td,th{border:1px solid #E2E8F0;padding:6px 8px;text-align:left} th{background:#F8FAFC}
+code{font-family:'JetBrains Mono';font-size:9pt;background:#F1F5F9;padding:1px 4px;border-radius:4px} em{color:#64748B}
+img{width:100%;border:1px solid #E2E8F0;border-radius:8px;margin:8px 0}
+</style></head><body><div class="head"><p>P07 · CASE STUDY</p><h1>SheetReach — Excel → WhatsApp campaign automation</h1></div><h1>Case study — SheetReach: Excel → WhatsApp campaign automation</h1>
+<p><em>Portfolio project 07. Fictional sample data, simulated WhatsApp sending. This is not a client project.</em></p>
+<h2>Problem</h2>
+<p>Many businesses keep customer and lead contacts in Excel. Before they can send a WhatsApp offer or update, someone has to:
+- clean the phone numbers by hand (<code>050 123 4567</code>, <code>+971-50-…</code>, <code>00971…</code>, blank cells, two numbers in one cell)
+- remove the same person entered twice
+- work out who agreed to receive WhatsApp messages and who asked not to be contacted
+- copy and paste the same message with each person's name
+- keep some record of who received it, who didn't, and why</p>
+<p>It's repetitive, easy to get wrong, and risky. Messaging people who opted out can get a WhatsApp business number restricted.</p>
+<h2>Solution</h2>
+<p>SheetReach turns that into one guided flow: <strong>Contacts → Clean → Review → Message → Process → Results</strong>.
+- <strong>Upload</strong> an Excel or CSV file. Columns are found automatically, even with title rows above the table.
+- <strong>Clean:</strong> every number is converted to international format, duplicates are removed on the <em>cleaned</em> number, and invalid or missing numbers are flagged.
+- <strong>Review:</strong> a business user sees the result in plain language before anything is saved. In the sample file: 1,250 rows → 1,092 ready, 41 duplicates, 15 invalid, 18 without a number, 12 on Do Not Contact and 72 that still need an opt-in.
+- <strong>Message:</strong> write once with <code>{{first_name}}</code>, <code>{{company}}</code> and <code>{{city}}</code>, with a live preview and safe fallbacks for missing data.
+- <strong>Process:</strong> a queue sends one message at a time. Temporary WhatsApp errors are retried and the campaign can be paused and resumed.
+- <strong>Results:</strong> sent, delivered, failed, skipped and opted out, each with a reason, plus an Excel export.</p>
+<h2>Automation (n8n)</h2>
+<p>A real, importable n8n workflow (<code>portfolio/n8n/whatsapp-excel-automation.json</code>) runs the whole process without anyone opening the app:</p>
+<blockquote>
+<p>new contact file → upload &amp; clean in SheetReach → data-quality gate → import clean contacts → Do Not Contact &amp; opt-in check → pick message → create personalised campaign → start sending → wait &amp; check progress (loop) → download Excel results → final report</p>
+</blockquote>
+<p>n8n calls SheetReach's API with standard HTTP Request nodes. The rules stay in one place (SheetReach), and n8n handles triggers, sequencing and reporting. The workflow ends cleanly with a reason if the file has nothing new or nobody is eligible. It was executed successfully in n8n 2.42.4 against the running app.</p>
+<h2>WhatsApp</h2>
+<p>SheetReach sends through a <strong>provider layer</strong>:
+- <strong>Demo WhatsApp provider</strong> (used in this portfolio): simulates acceptance, delivery, failures, retries and STOP replies on fictional data. No message leaves the app, and the interface says so on every campaign.
+- <strong>WhatsApp Business Cloud API provider</strong> (production): built on Meta's official API, using approved message templates and the delivery-status webhook. It switches on only when the client's Meta credentials are configured. It was not run against Meta in this project.</p>
+<p>No WhatsApp Web automation, browser bots, anti-ban tricks or rate-limit evasion are used.</p>
+<h2>Safety</h2>
+<ul>
+<li>Only contacts with a WhatsApp opt-in on record can enter a campaign. A file without an opt-in column needs explicit confirmation.</li>
+<li>The <strong>Do Not Contact</strong> list is keyed by phone number. It is fed by STOP replies, WhatsApp's "user stopped marketing messages" error, "No" in the file's opt-in column and manual entries.</li>
+<li>The list is checked again <strong>right before every message</strong>, so someone who opts out mid-campaign is not messaged later in it, and is blocked from all future campaigns.</li>
+<li>Every skip and failure is recorded with a reason, and an activity log keeps the history.</li>
+</ul>
+<h2>Technical architecture (short)</h2>
+<table>
+<thead>
+<tr>
+<th>Part</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Web app</td>
+<td>React + TypeScript + Tailwind, in the same design system as the rest of the portfolio series</td>
+</tr>
+<tr>
+<td>API &amp; rules</td>
+<td>Python FastAPI: import/cleaning, eligibility, campaign queue, reporting</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>SQLite for the demo; Postgres through one setting</td>
+</tr>
+<tr>
+<td>WhatsApp</td>
+<td><code>WhatsAppProvider</code> → <code>DemoWhatsAppProvider</code> / <code>WhatsAppCloudAPIProvider</code></td>
+</tr>
+<tr>
+<td>Automation</td>
+<td>n8n workflow over the REST API</td>
+</tr>
+<tr>
+<td>Quality</td>
+<td>41 backend tests, a 33-step browser test of the full journey, and a real n8n execution</td>
+</tr>
+</tbody>
+</table>
+<h2>Result</h2>
+<p>What the project demonstrates, measured on the fictional sample file in Demo Mode:
+- A messy 1,250-row Excel file is cleaned and classified automatically, with a reason for every excluded row.
+- One message is personalised for 1,092 eligible contacts. The 72 without an opt-in are skipped and listed, not messaged.
+- The complete process runs end to end from n8n, about 1 minute in the demo, and returns a report with the Excel results.
+- Opt-outs during a campaign are added to Do Not Contact and excluded from the next campaign.</p>
+<p>All delivery numbers come from the simulated provider and are <strong>not</strong> real WhatsApp results. No client, revenue or performance figures are claimed.</p>
+<h2>Screens</h2><img src="../screenshots/02-upload-validation.png"><img src="../screenshots/06-n8n-workflow-run.png"><img src="../screenshots/08-campaign-results.png"><img src="../screenshots/10-architecture.png"></body></html>

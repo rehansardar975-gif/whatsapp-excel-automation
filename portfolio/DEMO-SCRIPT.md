@@ -1,30 +1,30 @@
 # Demo video — P07 SheetReach + n8n
 
-**Video:** `portfolio/video/P07-sheetreach-n8n-demo.mp4`: 2 min 06 s, 1440×900, H.264, no audio, on-screen captions.
-It was recorded automatically from the real running apps (SheetReach + n8n 2.42.4) with `e2e/record-demo.mjs`. Waiting time was cut and live processing sped up with ffmpeg; nothing was staged or edited into the screens.
+**Video:** `portfolio/video/P07-sheetreach-n8n-demo.mp4`: 2 min 14 s, 1440×900, H.264, **voiceover + original background music**, with on-screen subtitles.
+It was recorded automatically from the real running apps (SheetReach + n8n 2.42.4) with `e2e/record-demo.mjs`. The voiceover speaks **exactly the subtitle text** (from `_build/audio/captions.json`), and each line starts as its subtitle appears. Three silent stretches were cut (page loading, the end of the processing wait, one navigation); nothing on screen was staged. Licences: `video/VOICE-AND-MUSIC-LICENSE.md`.
 
-## Sequence (as recorded)
-| Time | Screen | What happens | Caption / suggested narration |
-|---|---|---|---|
-| 0:00 | Title card | — | “Excel contacts → clean data → personalised WhatsApp campaign. SheetReach + n8n.” |
-| 0:05 | SheetReach dashboard | Overview | “Contacts live in Excel. Before a WhatsApp campaign they must be cleaned, checked for consent and personalised — usually by hand.” |
-| 0:11 | Upload Excel | Sample messy CSV uploaded | “Upload a messy contact file. No setup.” |
-| 0:14 | Review & clean | Summary tiles; *Invalid numbers* and *Do Not Contact* rows shown; **Import** | “SheetReach finds the columns, fixes number formats, removes duplicates and blocks invalid, opted-out and Do Not Contact numbers.” |
-| 0:28 | Messages | Preview typed as Omar / Skyline Realty | “Write the message once. {{first_name}} and {{company}} are filled in for every contact.” |
-| 0:39 | **n8n editor** | Workflow shown, **Execute workflow** clicked, nodes turn green live | “Now the automation: an n8n workflow takes a new 1,250-row Excel file and runs the full process through the SheetReach API.” |
-| 0:55 | n8n (running) | Wait → Check progress loop running | “The campaign is running. n8n keeps checking progress until the queue is finished.” |
-| 1:08 | SheetReach campaign | **Started by n8n** badge, live progress (sped up 3×) | “Messages go out one by one through the WhatsApp provider. Temporary errors are retried; opt-outs are re-checked before every send.” / “Demo Mode: sending is simulated…” |
-| 1:22 | Results | KPIs, failure and skip reasons, *Failed* and *Opted out* tabs, Excel export | “Clear results… each with a plain reason.” / “People who replied STOP are added to Do Not Contact automatically…” |
-| 1:46 | n8n executions | Execution **Succeeded** | “n8n finished the run: execution successful, final report built and the Excel results attached.” |
-| 1:55 | End card | — | “Built on the official WhatsApp Business Cloud API design. The demo uses a simulated provider; the client's Meta account connects in production.” |
+## Sequence (subtitle = voiceover)
+| Time | Screen | Subtitle / voiceover |
+|---|---|---|
+| 0:00 | Title card | Excel contacts → clean data → personalised WhatsApp campaign. SheetReach + n8n. The complete workflow, automated end to end. |
+| 0:12 | Dashboard | Contacts live in Excel. Before a WhatsApp campaign, they must be cleaned, checked for consent and personalised — usually by hand. |
+| 0:21 | Upload Excel | Upload a messy contact file. No setup needed. |
+| 0:25 | Review & clean | SheetReach finds the columns, fixes number formats, removes duplicates, and blocks invalid and Do Not Contact numbers. |
+| 0:34 | Import done | Only clean, consented contacts are saved. |
+| 0:38 | Messages | Write the message once. The first name and company are filled in for every contact. |
+| 0:44 | **n8n editor** | Now the automation. An n8n workflow takes a new 1,250-row Excel file and runs the whole process through the SheetReach API. |
+| 0:57 | n8n executing | Running live: download the file, clean and validate, check opt-in and Do Not Contact, create the campaign, start sending. |
+| 1:07 | n8n loop | The campaign is running. n8n keeps checking progress until the queue is finished. |
+| 1:13 | SheetReach campaign (Started by n8n) | Messages go out one by one through the WhatsApp provider. Temporary errors are retried automatically. |
+| 1:21 | Live processing | Demo Mode: sending is simulated on fictional data. The official WhatsApp Business Cloud API connects with the client's own account. |
+| 1:33 | Results | Clear results: sent, delivered, failed and skipped — each with a plain reason. |
+| 1:39 | Opted-out tab | People who reply STOP are added to Do Not Contact and blocked from every future campaign. |
+| 1:46 | Export | The full results are exported to Excel. |
+| 1:50 | n8n executions | n8n finished the run: the execution succeeded, and the final report was built with the Excel results attached. |
+| 1:58 | End card | Excel → clean contacts → WhatsApp campaign → report. Built on the official WhatsApp Business Cloud API design. The demo uses a simulated provider; the client's Meta account connects in production. |
 
-## Optional voiceover
-The captions double as narration, read at a calm pace. If you add your own voice, keep the honesty lines: *“sending is simulated”* and *“fictional data”*.
-
-## Re-record
-1. Start SheetReach with `DEMO_SEND_DELAY=0.03` and start n8n with the workflow imported.
-2. Run `N8N_EMAIL=… N8N_PASSWORD=… node e2e/record-demo.mjs <workflowId>`. The raw `.webm` is saved to `portfolio/video/raw/`.
-3. Convert and cut with ffmpeg: speed up the processing stretch and drop idle waiting (see the commit history for the exact filter).
+## Rebuild
+See `_build/audio/README.md` (voice clips → recording → subtitle sync → cut → music → mix).
 
 ## Screenshot set (`portfolio/screenshots/`, 2880×1800 unless noted)
 | # | File | Use on Upwork |

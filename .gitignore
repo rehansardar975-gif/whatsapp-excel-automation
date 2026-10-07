@@ -9,3 +9,6 @@ backend/data/
 .env
 .DS_Store
 portfolio/video/raw/
+portfolio/_build/audio/lines/
+portfolio/_build/audio/*.wav
+portfolio/_build/audio/cuts.txt

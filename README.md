@@ -4,7 +4,7 @@
 
 Upload a contact list from Excel or CSV. The app cleans it, shows you who can be messaged, sends a personalised WhatsApp message through a queue with retries and opt-out protection, and reports exactly what happened. A **real n8n workflow** can run the whole process automatically.
 
-**Watch:** [`portfolio/video/P07-sheetreach-n8n-demo.mp4`](portfolio/video/P07-sheetreach-n8n-demo.mp4) (2 min) · **Case study:** [`portfolio/CASE-STUDY.md`](portfolio/CASE-STUDY.md) · **Slides:** [`portfolio/CLIENT-PRESENTATION.pdf`](portfolio/CLIENT-PRESENTATION.pdf)
+**Watch:** [`portfolio/video/P07-sheetreach-n8n-demo.mp4`](portfolio/video/P07-sheetreach-n8n-demo.mp4) (2 min 14 s, voiceover) · **Everything in one ZIP:** [`portfolio/P07-SheetReach-Portfolio-Package.zip`](portfolio/P07-SheetReach-Portfolio-Package.zip) · **Case study:** [`portfolio/CASE-STUDY.md`](portfolio/CASE-STUDY.md) · **Slides:** [`portfolio/CLIENT-PRESENTATION.pdf`](portfolio/CLIENT-PRESENTATION.pdf)
 
 > This is a portfolio project. All contacts and businesses are fictional, and phone numbers are randomly generated. **No real WhatsApp messages are sent:** the final send step is simulated in Demo Mode. The live WhatsApp Cloud API provider is implemented but was not run against Meta.
 

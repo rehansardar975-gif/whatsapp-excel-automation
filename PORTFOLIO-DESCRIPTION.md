@@ -30,6 +30,6 @@ n8n · WhatsApp Business API · Workflow Automation · API Integration · Python
 9. `10-architecture.png`: demo provider vs official WhatsApp Cloud API
 10. `03-contacts.png`: contacts with clear statuses (optional)
 
-**Video:** `portfolio/video/P07-sheetreach-n8n-demo.mp4` (2 min 06 s).
+**Video:** `portfolio/video/P07-sheetreach-n8n-demo.mp4` (2 min 14 s, voiceover + music).
 
 > Honesty note for the listing: say "Demo Mode, simulated sending, fictional data". Do not describe it as a client project or quote the demo numbers as real delivery rates.

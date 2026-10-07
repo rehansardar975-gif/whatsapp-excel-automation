@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="brand.css"><style>
+body{width:1600px;height:1200px;background:var(--canvas);padding:72px 76px;position:relative;overflow:hidden}
+h1{font-size:50px;font-weight:800;margin-top:14px} .sub{font-size:22px;color:var(--ink2);margin-top:12px;max-width:1300px}
+.k{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:48px}
+.c{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px} .c p{font:600 14px Inter;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.c b{display:block;font:700 64px 'JetBrains Mono';margin-top:10px;color:#059669} .c span{font-size:18px;color:var(--ink2)}
+table{width:100%;border-collapse:collapse;margin-top:34px;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;font-size:22px}
+td{padding:20px 22px;border-top:1px solid var(--line)} td:first-child{font-weight:600;width:330px} tr:first-child td{border-top:0}
+.ok{color:#059669;font-weight:700;font-family:'JetBrains Mono'}
+.foot{position:absolute;left:76px;right:76px;bottom:36px;display:flex;justify-content:space-between;font:600 14px 'JetBrains Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+</style></head><body><div class="glow"></div>
+<p class="eyebrow">P07 · Tested</p><h1>Every part of the workflow is tested</h1>
+<p class="sub">Automated backend tests, a full browser test of the client journey, and a real n8n execution against the running app.</p>
+<div class="k">
+<div class="c"><p>Backend tests</p><b>42 / 42</b><span>import, cleaning, Do Not Contact, queue, retries, webhook, providers</span></div>
+<div class="c"><p>Browser journey</p><b>33 / 33</b><span>upload → clean → message → campaign → results, plus phone layout</span></div>
+<div class="c"><p>n8n workflow</p><b style="font-size:46px;margin-top:18px">Succeeded</b><span>n8n 2.42.4 · 1,250-row file · campaign completed</span></div></div>
+<table>
+<tr><td>Phone numbers</td><td>050…, +971…, 00971…, Excel numbers, two numbers in one cell → <span class="ok">correct international format</span></td></tr>
+<tr><td>Bad data</td><td>Duplicates, invalid and missing numbers, title rows above the header → <span class="ok">detected, with a reason</span></td></tr>
+<tr><td>Consent & opt-out</td><td>No opt-in → skipped · STOP reply → Do Not Contact · checked again before every send → <span class="ok">blocked in future campaigns</span></td></tr>
+<tr><td>Sending (demo provider)</td><td>Success, failure, retry with backoff, pause / resume → <span class="ok">results add up exactly</span></td></tr>
+<tr><td>WhatsApp Cloud API</td><td>Provider selection and Meta error handling, with mocked responses → <span class="ok">passed</span> · not run against Meta</td></tr>
+<tr><td>Exports & errors</td><td>Excel / CSV export, formula-injection safe, friendly upload errors, no console errors → <span class="ok">passed</span></td></tr>
+</table>
+<div class="foot"><span>Results on fictional sample data · 7 Oct 2026</span><span>Full details: TEST-REPORT.md</span></div>
+</body></html>
