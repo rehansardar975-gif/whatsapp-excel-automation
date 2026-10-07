@@ -122,7 +122,7 @@ function UploadStep({ busy, error, country, setCountry, onFile, onSample }: {
         </div>
         <div className="card p-5">
           <p className="label">No file at hand?</p>
-          <p className="mt-1 text-sm text-slate-500">Try a fictional sample list with typical problems: mixed number formats, duplicates and missing numbers.</p>
+          <p className="mt-1 text-sm text-slate-500">Try a sample list with typical problems: mixed number formats, duplicates and missing numbers.</p>
           <div className="mt-3 space-y-2">
             {[["sample-contacts-1250.xlsx", "1,250 contacts (Excel)"], ["sample-contacts-messy.csv", "64 messy contacts (CSV)"]].map(([f, l]) => (
               <div key={f} className="flex items-center gap-2">

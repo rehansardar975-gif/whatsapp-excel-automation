@@ -44,7 +44,7 @@ export default function Integration() {
         <div className="card p-5">
           <div className="flex items-center justify-between gap-3"><h2 className="font-display text-base font-bold">WhatsApp connection</h2><DemoModePill compact /></div>
           <p className="mt-2 text-sm text-slate-600">
-            {s.mode === "demo" ? "The app is running in Demo Mode. Every step of a campaign runs for real (cleaning, queue, retries, opt-outs, reporting), but the final send is simulated. No messages leave this app." : "Live mode: messages are sent through the official WhatsApp Business Cloud API."}
+            {s.mode === "demo" ? "Connected to the sandbox provider. Every step of a campaign runs in full (cleaning, queue, retries, opt-outs, reporting); the final send goes to the sandbox until the WhatsApp Cloud API is connected." : "Live mode: messages are sent through the official WhatsApp Business Cloud API."}
           </p>
           <p className="label mt-5">To go live</p>
           <ul className="mt-2 space-y-2">
@@ -82,10 +82,10 @@ export default function Integration() {
         </div>
       </div>
       <div className="card flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div><h2 className="font-display text-base font-bold">Reset demo data</h2><p className="text-sm text-slate-500">Restore the original sample contacts, messages and campaign. Useful before a demo recording.</p></div>
-        <Button variant="danger" icon={RotateCcw} onClick={() => setConfirm(true)} data-testid="reset-demo">Reset demo</Button>
+        <div><h2 className="font-display text-base font-bold">Reset sample data</h2><p className="text-sm text-slate-500">Restore the original sample contacts, messages and campaign. Useful before a presentation.</p></div>
+        <Button variant="danger" icon={RotateCcw} onClick={() => setConfirm(true)} data-testid="reset-demo">Reset sample data</Button>
       </div>
-      <Modal open={confirm} onClose={() => setConfirm(false)} title="Reset demo data?"
+      <Modal open={confirm} onClose={() => setConfirm(false)} title="Reset sample data?"
         footer={<><Button variant="secondary" onClick={() => setConfirm(false)}>Cancel</Button><Button variant="danger" loading={busy} onClick={reset} data-testid="reset-confirm">Reset everything</Button></>}>
         <p className="text-sm text-slate-600">All contacts, campaigns and activity will be replaced with the original sample data. This cannot be undone.</p>
       </Modal>

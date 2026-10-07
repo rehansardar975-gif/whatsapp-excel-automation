@@ -1,12 +1,12 @@
 # SheetReach — Excel → WhatsApp Business Automation
 
-**Portfolio Project 07 · Portfolio Demo · Sample data only · Demo Mode — WhatsApp Business API Ready**
+**Excel → WhatsApp automation with n8n · WhatsApp Cloud API ready**
 
 Upload a contact list from Excel or CSV. The app cleans it, shows you who can be messaged, sends a personalised WhatsApp message through a queue with retries and opt-out protection, and reports exactly what happened. A **real n8n workflow** can run the whole process automatically.
 
-**Watch:** [`portfolio/video/P07-sheetreach-n8n-demo.mp4`](portfolio/video/P07-sheetreach-n8n-demo.mp4) (2 min 14 s, voiceover) · **Everything in one ZIP:** [`portfolio/P07-SheetReach-Portfolio-Package.zip`](portfolio/P07-SheetReach-Portfolio-Package.zip) · **Case study:** [`portfolio/CASE-STUDY.md`](portfolio/CASE-STUDY.md) · **Slides:** [`portfolio/CLIENT-PRESENTATION.pdf`](portfolio/CLIENT-PRESENTATION.pdf)
+**Watch:** [`portfolio/video/P07-sheetreach-n8n-demo.mp4`](portfolio/video/P07-sheetreach-n8n-demo.mp4) (2 min 11 s, voiceover) · **Everything in one ZIP:** [`portfolio/P07-SheetReach-Portfolio-Package.zip`](portfolio/P07-SheetReach-Portfolio-Package.zip) · **Case study:** [`portfolio/CASE-STUDY.md`](portfolio/CASE-STUDY.md) · **Slides:** [`portfolio/CLIENT-PRESENTATION.pdf`](portfolio/CLIENT-PRESENTATION.pdf)
 
-> This is a portfolio project. All contacts and businesses are fictional, and phone numbers are randomly generated. **No real WhatsApp messages are sent:** the final send step is simulated in Demo Mode. The live WhatsApp Cloud API provider is implemented but was not run against Meta.
+> Sample contacts and businesses are generated; phone numbers are random. By default campaigns run on the **sandbox provider** (no messages leave the app). The WhatsApp Cloud API provider switches on with the client's Meta credentials.
 
 ![Dashboard](portfolio/screenshots/01-dashboard.png)
 
@@ -28,14 +28,14 @@ This is slow and error-prone. It also risks the WhatsApp number: messaging peopl
 | 2. Clean | "1,250 rows · 1,092 ready · 41 duplicates · 15 invalid · 18 no number · 12 Do Not Contact · 72 need opt-in" | Numbers normalised to E.164 (`+971501234567`) with `phonenumbers`, deduplicated on the *cleaned* number, checked against the suppression list |
 | 3. Review | Row-by-row result with a plain reason; fix a column mapping if needed | Re-analysis on every mapping change; nothing is saved until **Import** |
 | 4. Message | Write once with `{{first_name}}`, `{{company}}`, `{{city}}`; live preview | Fallbacks for missing data ("Hi there"); maps to Cloud API named template parameters |
-| 5. Review campaign | "You are about to message 1,092 contacts", preview, Demo Mode notice → **Start Campaign** | Ineligible contacts are recorded as *Skipped* with the reason |
+| 5. Review campaign | "You are about to message 1,092 contacts", preview, provider notice → **Start Campaign** | Ineligible contacts are recorded as *Skipped* with the reason |
 | 6. Processing | Live progress, pause / resume | Background queue; Do Not Contact re-checked right before each send; temporary errors retried with backoff |
 | 7. Results | Processed, sent, delivered, failed, skipped, opted out, plus *why* | Status updates go through the same handler as Meta's status webhook; Excel export |
 
 Also included:
 - **Contacts:** search, filters, sorting, status tabs, "why not eligible", recording an opt-in, export.
 - **Do Not Contact list:** fed by STOP replies, error 131050, opted-out rows in a file, and manual entries.
-- **Contact Collection:** Collect → Clean → Validate → Deduplicate → Review → Export, from a bundled *fictional* business directory. Collected businesses are added as *Needs opt-in* and never messaged automatically.
+- **Contact Collection:** Collect → Clean → Validate → Deduplicate → Review → Export, from a bundled sample business directory. Collected businesses are added as *Needs opt-in* and never messaged automatically.
 - **Activity Log:** imports, duplicates, invalid numbers, campaigns, retries, failures and opt-outs.
 - **WhatsApp & n8n page:** go-live checklist, environment variables, and the production automation flow.
 
@@ -50,7 +50,7 @@ python3 -m venv .venv && .venv/bin/pip install -r backend/requirements.txt
 cd backend && ../.venv/bin/uvicorn app.main:app --reload --port 8000     # API + seeded demo data
 cd frontend && npm install && npm run dev                                 # UI on http://localhost:5173
 ```
-The first start creates `backend/data/app.db` with fictional demo data: 175 contacts, 3 messages and one completed campaign. **WhatsApp & n8n → Reset demo** restores it. Sample files to upload are in `sample-data/`, or use the **"Use sample file"** buttons on the upload page.
+The first start creates `backend/data/app.db` with sample data: 175 contacts, 3 messages and one completed campaign. **WhatsApp & n8n → Reset sample data** restores it. Sample files to upload are in `sample-data/`, or use the **"Use sample file"** buttons on the upload page.
 
 Tests:
 ```bash
@@ -64,13 +64,13 @@ N8N_EMAIL=… N8N_PASSWORD=… node e2e/n8n-run.mjs <workflowId>   # runs the n8
 |---|---|
 | Excel/CSV import, cleaning, Do Not Contact, personalisation, queue, retries, reports, exports | Built and tested |
 | n8n workflow | Built and executed (n8n 2.42.4) |
-| Demo WhatsApp provider | Built; **simulated** sending on fictional data (default) |
+| Sandbox WhatsApp provider | Built; default for testing (no messages leave the app) |
 | WhatsApp Cloud API provider | Built and unit-tested with mocked Meta responses. **Needs the client's** Meta Business account, phone number ID, access token, app secret and approved templates. Not run against Meta |
 | Status webhook (`/api/webhooks/whatsapp`) | Built and tested with Meta-format payloads; needs a public URL registered in the client's Meta app |
 
 ## Architecture (short)
 React + TypeScript + Tailwind (Vite) → FastAPI → SQLAlchemy (SQLite by default; Postgres via `DATABASE_URL`) → `WhatsAppProvider`:
-- `DemoWhatsAppProvider` (default): simulated, deterministic outcomes
+- `DemoWhatsAppProvider` (default sandbox): deterministic test outcomes
 - `WhatsAppCloudAPIProvider`: official Graph API `POST /{phone-number-id}/messages`, template messages, enabled only with `WHATSAPP_MODE=cloud_api` **and** credentials
 
 See [ARCHITECTURE.md](ARCHITECTURE.md).
@@ -103,7 +103,7 @@ It was executed successfully in n8n 2.42.4 against the running app. Campaigns it
 - Secrets come only from environment variables (`.env.example`). The UI never shows tokens.
 
 ## Production considerations (not built)
-- Authentication and roles. This demo is single-user with no login.
+- Authentication and roles. The current build is single-user with no login.
 - Postgres with migrations (Alembic), and a real job queue (Redis/RQ or Celery) instead of the in-process worker thread.
 - Template submission and approval sync with Meta.
 - Daily messaging-limit awareness: Meta limits apply per business portfolio and grow with quality rating.
@@ -126,7 +126,7 @@ frontend/src/pages/       Dashboard, ImportContacts, Contacts, Collection, Messa
 e2e/journey.mjs           browser test of the full journey (+ screenshots)
 e2e/n8n-run.mjs           executes the n8n workflow in the n8n editor (+ screenshots)
 e2e/record-demo.mjs       records the demo video from the running apps
-sample-data/              fictional sample files (1,250-row Excel, messy CSV)
+sample-data/              sample files (1,250-row Excel, messy CSV)
 portfolio/n8n/            importable n8n workflow + setup guide
 portfolio/screenshots/    10 portfolio images (+ extra/)
 portfolio/video/          demo video (MP4)

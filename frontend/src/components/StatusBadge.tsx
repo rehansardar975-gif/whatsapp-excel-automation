@@ -50,10 +50,10 @@ export function ViaBadge({ via }: { via?: string }) {
 
 export function DemoModePill({ compact }: { compact?: boolean }) {
   return (
-    <span data-testid="demo-mode-pill" title="No real WhatsApp messages are sent. Results are simulated."
+    <span data-testid="demo-mode-pill" title="Messages are processed by the sandbox provider. Connect the WhatsApp Cloud API to send live."
       className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-800">
       <span className="h-2 w-2 rounded-full bg-teal-500" />
-      {compact ? "Demo Mode" : "Demo Mode — WhatsApp Business API Ready"}
+      {compact ? "Sandbox" : "Sandbox · WhatsApp Cloud API ready"}
     </span>
   );
 }

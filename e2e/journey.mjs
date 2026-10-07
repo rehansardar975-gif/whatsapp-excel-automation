@@ -31,7 +31,7 @@ await page.request.post(`${BASE}/api/demo/reset`);
 await page.goto(BASE);
 await page.getByTestId("kpi-contacts").waitFor();
 check("Dashboard loads with KPIs", (await text('[data-testid="kpi-contacts"]')).includes("175"));
-check("Demo Mode label visible", (await text('[data-testid="demo-mode-pill"]')).includes("Demo Mode — WhatsApp Business API Ready"));
+check("Demo Mode label visible", (await text('[data-testid="demo-mode-pill"]')).includes("Sandbox · WhatsApp Cloud API ready"));
 await shot("01-dashboard");
 
 // 2 Upload: error state first

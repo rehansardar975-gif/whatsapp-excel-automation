@@ -20,15 +20,15 @@ h1{font-size:44px;font-weight:800;margin-top:12px} .sub{font-size:20px;color:var
 </style></head><body><div class="glow"></div>
 <p class="eyebrow">P07 · Architecture</p>
 <h1>Excel → SheetReach → WhatsApp, orchestrated by n8n</h1>
-<p class="sub">Business rules live in SheetReach. n8n runs the process through SheetReach's API. The WhatsApp provider is swappable: the demo uses a simulated provider, and production uses the official Cloud API.</p>
+<p class="sub">Business rules live in SheetReach. n8n runs the process through SheetReach's API. The WhatsApp provider is swappable: a sandbox provider for testing, and the official Cloud API for live sending.</p>
 <div class="grid"><div class="flow">
  <div class="box"><span class="num">1</span><div><h3>Excel / CSV contact file</h3><p>Upload in the app, or a new file picked up by n8n (Drive, email, form, CRM export)</p></div></div><div class="arrow"></div>
  <div class="box app"><span class="num">2</span><div><h3>SheetReach · import & clean</h3><p>Column detection · phone numbers → +E.164 · duplicates removed · invalid / missing flagged</p></div></div><div class="arrow"></div>
  <div class="box app"><span class="num">3</span><div><h3>Validation · opt-in · Do Not Contact</h3><p>Only consented, valid, non-blocked contacts can enter a campaign — re-checked before every send</p></div></div><div class="arrow"></div>
  <div class="box app"><span class="num">4</span><div><h3>Personalised campaign queue</h3><p>{{first_name}} · {{company}} · {{city}} per contact · retries with backoff · pause / resume</p></div></div><div class="arrow"></div>
  <div class="split">
-  <div class="prov demo"><span class="badge b-demo">Used in this demo</span><h3>Demo WhatsApp provider</h3>Simulated sending and delivery statuses on fictional data. Nothing leaves the app.</div>
-  <div class="prov cloud"><span class="badge b-ready">Production · client credentials</span><h3>WhatsApp Business Cloud API</h3>Official Meta API, approved templates. Implemented; switched on with the client's Meta account. Not run against Meta in this demo.</div>
+  <div class="prov demo"><span class="badge b-demo">Default · testing</span><h3>Sandbox WhatsApp provider</h3>Full sending and delivery-status flow for testing. Nothing leaves the app.</div>
+  <div class="prov cloud"><span class="badge b-ready">Production · client credentials</span><h3>WhatsApp Business Cloud API</h3>Official Meta API, approved templates. Implemented; switched on with the client's Meta account.</div>
  </div><div class="arrow"></div>
  <div class="box"><span class="num">5</span><div><h3>Status tracking</h3><p>Sent · delivered · failed · STOP replies → Do Not Contact (Meta status webhook in production)</p></div></div><div class="arrow"></div>
  <div class="box"><span class="num">6</span><div><h3>Results & report</h3><p>Campaign dashboard with reasons · Excel export · n8n final report</p></div></div>
@@ -37,5 +37,5 @@ h1{font-size:44px;font-weight:800;margin-top:12px} .sub{font-size:20px;color:var
 <ul><li>Trigger: manual run or webhook with a file URL</li><li>Download file → upload to SheetReach</li><li>Data-quality gate (stops if no phone column)</li><li>Import clean contacts</li><li>DNC & opt-in check — stops if nobody is eligible</li><li>Pick message → create personalised campaign</li><li>Start sending</li><li>Poll progress until complete</li><li>Download Excel results</li><li>Build final report</li></ul>
 <p style="margin-top:18px;font-size:13.5px;color:#94A3B8;line-height:1.45">Calls the SheetReach REST API with real HTTP Request nodes. It doesn't duplicate any cleaning or sending logic.</p></div>
 </div>
-<div class="legend"><span><span class="k"><i style="background:#F0FDFA;border:2px solid #14B8A6"></i>Built & running</span><span class="k"><i style="border:2px dashed #818CF8"></i>Built, needs client credentials</span></span><span>Fictional data · not a client project</span></div>
+<div class="legend"><span><span class="k"><i style="background:#F0FDFA;border:2px solid #14B8A6"></i>Built & running</span><span class="k"><i style="border:2px dashed #818CF8"></i>Built, needs client credentials</span></span><span>SheetReach · Excel → WhatsApp automation</span></div>
 </body></html>

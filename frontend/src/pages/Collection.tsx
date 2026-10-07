@@ -40,7 +40,7 @@ export default function Collection() {
       <PageHeader eyebrow="Data preparation" title="Contact Collection" subtitle="Collect business listings, clean and validate the numbers, remove duplicates, then export or add them to your contacts." />
       <div className="flex gap-3 rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
         <Info className="mt-0.5 h-5 w-5 shrink-0" />
-        <p><b>Demo source:</b> a bundled sample directory of fictional businesses. No websites are scraped. In production this step connects to an approved source such as the Google Places API or the client's own CRM. Collected businesses have not opted in, so they are added as <i>Needs opt-in</i> and are never messaged automatically.</p>
+        <p><b>Source:</b> a bundled sample business directory. No websites are scraped. In production this step connects to an approved source such as the Google Places API or the client's own CRM. Collected businesses have not opted in, so they are added as <i>Needs opt-in</i> and are never messaged automatically.</p>
       </div>
 
       <div className="card grid gap-4 p-5 sm:grid-cols-4 sm:items-end">

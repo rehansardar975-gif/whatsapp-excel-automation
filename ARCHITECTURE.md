@@ -13,7 +13,7 @@
                           │
                           ▼
                   WhatsAppProvider (abstract)
-                   ├─ DemoWhatsAppProvider        (default, simulated)
+                   ├─ DemoWhatsAppProvider        (default sandbox)
                    └─ WhatsAppCloudAPIProvider     (Graph API, template messages)
 ```
 Routers only validate input and translate errors. All rules live in `services/`, so the same logic serves the UI, an n8n workflow or a script.
@@ -60,7 +60,7 @@ STOP reply (webhook/demo) ─► Suppression + contact opt-in removed + message.
 6. **Commit:** saves *ready* and *needs opt-in*, adds file opt-outs to suppression, logs the activity, and discards the raw rows.
 
 ## Going live (Cloud API)
-Set `WHATSAPP_MODE=cloud_api`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_APP_SECRET` and `WHATSAPP_VERIFY_TOKEN`. Then register `https://<host>/api/webhooks/whatsapp` in the Meta app and create each message as an approved template. Its API name is the lower-snake-case form of the message name. Without credentials, `get_provider()` falls back to Demo Mode, so the app can never claim to be live when it isn't.
+Set `WHATSAPP_MODE=cloud_api`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_APP_SECRET` and `WHATSAPP_VERIFY_TOKEN`. Then register `https://<host>/api/webhooks/whatsapp` in the Meta app and create each message as an approved template. Its API name is the lower-snake-case form of the message name. Without credentials, `get_provider()` falls back to the sandbox provider, so the app can never claim to be live when it isn't.
 
 **Not verified:** the Cloud API provider was not run against Meta (no business account in this project). Its request payload shape is unit-tested.
 
@@ -72,4 +72,4 @@ Requests carry `X-Automation: n8n`. SheetReach stores it on the campaign (`creat
 
 Design rule: n8n holds **no business logic and no WhatsApp credentials**. Cleaning, consent, Do Not Contact and sending stay in SheetReach, so the UI and the automation can never disagree. Meta's status webhook points at SheetReach, not n8n, so delivery state and opt-outs are stored next to the contacts.
 
-See `portfolio/screenshots/10-architecture.png` for the diagram (demo provider vs official Cloud API).
+See `portfolio/screenshots/10-architecture.png` for the diagram (sandbox provider and official Cloud API).

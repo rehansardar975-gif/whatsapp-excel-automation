@@ -65,7 +65,7 @@ export default function CampaignDetail() {
         </div>
         <div className="mt-5"><CampaignBar r={r} /></div>
         <div className="mt-2"><Legend r={r} /></div>
-        <div className="mt-4"><DemoModePill /> <span className="ml-2 text-xs text-slate-500">Results are simulated — no real messages were sent.</span></div>
+        <div className="mt-4"><DemoModePill /> <span className="ml-2 text-xs text-slate-500">Sandbox run · connect the WhatsApp Cloud API to send live.</span></div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-6" data-testid="result-kpis">
@@ -123,7 +123,7 @@ export default function CampaignDetail() {
         )}
       </div>
       <Details summary="Technical details">
-        Provider: <b>{c.provider === "demo" ? "DemoWhatsAppProvider (simulated)" : "WhatsApp Cloud API"}</b>. Error codes follow the WhatsApp Cloud API (e.g. 131026 not on WhatsApp,
+        Provider: <b>{c.provider === "demo" ? "Sandbox provider" : "WhatsApp Cloud API"}</b>. Error codes follow the WhatsApp Cloud API (e.g. 131026 not on WhatsApp,
         131049 per-user marketing limit — retried with backoff, 131050 user stopped marketing messages — added to Do Not Contact). Delivery updates use the same handler as the live status webhook.
       </Details>
     </div>

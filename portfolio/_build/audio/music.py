@@ -1,7 +1,7 @@
 # Original background music for the P07 demo video, generated in code (no samples, loops or third-party material).
 # Calm pad: Dmaj9 - Bm7 - Gmaj7 - A6sus, 5 s per chord, soft bell arpeggio at 72 bpm. Output: music.wav
 import numpy as np, soundfile as sf
-SR = 48000; DUR = 134.280000; t = np.arange(int(SR * DUR)) / SR
+SR = 48000; DUR = 131.440000; t = np.arange(int(SR * DUR)) / SR
 note = lambda m: 440.0 * 2 ** ((m - 69) / 12)
 chords = [[50, 57, 66, 73, 76], [47, 54, 62, 69, 74], [43, 50, 59, 66, 71], [45, 52, 61, 64, 71]]
 CH = 5.0; BEAT = 60 / 72

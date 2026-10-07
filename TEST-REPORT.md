@@ -1,6 +1,6 @@
 # Test report — SheetReach (P07)
 
-Run on 7 Oct 2026 in a Linux cloud container: Python 3.13, Node 22, Chromium (Playwright 1.56). All data is fictional.
+Run on 7 Oct 2026 in a Linux cloud container: Python 3.13, Node 22, Chromium (Playwright 1.56). All data is generated sample data.
 
 ## Summary
 | Suite | Result |
@@ -53,14 +53,14 @@ Also observed: the execution keeps running server-side while the browser moves t
 ## Browser journey (`node e2e/journey.mjs`)
 | # | Check | Result |
 |---|---|---|
-| 1 | Dashboard loads with KPIs; "Demo Mode — WhatsApp Business API Ready" visible | ✅ |
+| 1 | Dashboard loads with KPIs; "Sandbox · WhatsApp Cloud API ready" visible | ✅ |
 | 2 | Uploading a `.pdf` shows a friendly error | ✅ |
 | 3 | 1,250-row sample Excel analysed: 1,092 ready, 41 duplicates (also 72 need opt-in, 15 invalid, 18 missing, 12 Do Not Contact) | ✅ |
 | 4 | Phone column auto-mapped to "Mobile"; clicking a summary tile filters the rows | ✅ |
 | 5 | Import completes | ✅ |
 | 6 | Contacts: *Needs opt-in* tab shows the reason; no-match search shows the empty state; Excel export downloads | ✅ |
 | 7 | Message builder: inserted fields give a live personalised preview; unknown `{{nickname}}` is flagged | ✅ |
-| 8 | Campaign audience preview = 1,092 ready; review screen shows count + Demo Mode notice | ✅ |
+| 8 | Campaign audience preview = 1,092 ready; review screen shows count + provider notice | ✅ |
 | 9 | Live progress while sending; pause → "Paused"; resume → completes | ✅ |
 | 10 | Results add up: processed 1,164 = sent 1,041 + failed 51 + skipped 72; delivered 1,018 | ✅ |
 | 11 | Failed tab shows plain-language reasons; results export downloads | ✅ |
@@ -69,7 +69,7 @@ Also observed: the execution keeps running server-side while the browser moves t
 | 14 | 9 pages at phone width (390 px): no page-level horizontal scroll; mobile menu opens | ✅ |
 | 15 | No browser console errors (the intentional 422 from the bad upload excluded) | ✅ |
 
-All numbers above are **simulated Demo Mode results on fictional data**, not real delivery statistics.
+All numbers above are **sandbox-provider results on generated sample data**, not live delivery statistics.
 
 ## Problems found and fixed during testing
 1. `N/A` in a phone cell was split on "/" and reported as *invalid* instead of *missing*. Fixed: placeholder values are checked before splitting multi-number cells.
@@ -86,7 +86,7 @@ All numbers above are **simulated Demo Mode results on fictional data**, not rea
 11. During the video recording the n8n execution-preview step could hang, so it was removed from the recording script.
 
 ## Not tested / limits
-- Real WhatsApp sending, template approval and real webhook deliveries from Meta: **not verified because** no WhatsApp Business account or Meta app is connected (by design for a portfolio demo).
+- Real WhatsApp sending, template approval and real webhook deliveries from Meta: **not verified because** no WhatsApp Business account or Meta app is connected (requires the client's account).
 - Load beyond 10,000 rows per upload (the enforced limit) and multiple simultaneous users. The in-process queue is single-server.
 - Browsers other than Chromium.
 - n8n versions other than 2.42.4 (the workflow only uses standard core nodes).

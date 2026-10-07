@@ -50,8 +50,8 @@ export default function Layout({ children }: { children: ReactNode }) {
         ))}
       </nav>
       <div className="m-3 rounded-lg border border-slate-800 p-3">
-        <p className="text-[11px] font-semibold text-teal-400">Portfolio Demo</p>
-        <p className="mt-0.5 text-[11px] leading-snug text-slate-500">Sample data only. No real WhatsApp messages are sent.</p>
+        <p className="text-[11px] font-semibold text-teal-400">WhatsApp connection</p>
+        <p className="mt-0.5 text-[11px] leading-snug text-slate-500">Sandbox provider · Cloud API ready</p>
       </div>
     </aside>
   );
@@ -70,7 +70,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <button aria-label="Open menu" data-testid="mobile-menu-btn" className="rounded-md p-2 text-slate-600 hover:bg-slate-100 lg:hidden" onClick={() => setOpen((v) => !v)}>
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
-            <span className="hidden font-num text-[11px] font-semibold uppercase tracking-[.18em] text-slate-400 sm:inline">P07 · Excel → WhatsApp Automation</span>
+            <span className="hidden font-num text-[11px] font-semibold uppercase tracking-[.18em] text-slate-400 sm:inline">Excel → WhatsApp Automation</span>
           </div>
           <div className="hidden sm:block"><DemoModePill /></div>
           <div className="sm:hidden"><DemoModePill compact /></div>

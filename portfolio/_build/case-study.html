@@ -1,14 +1,13 @@
 <!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="brand.css"><style>
 @page{size:A4;margin:18mm 18mm 20mm} body{font-size:11pt;line-height:1.55;color:#1e293b}
-.head{background:#0B0F17;color:#fff;padding:26px 30px;border-radius:12px;margin-bottom:18px;position:relative;overflow:hidden}
+.head{background:#0B0F17;color:#fff;padding:26px 30px;border-radius:12px;margin-bottom:18px}
 .head p{font:600 9pt 'JetBrains Mono';letter-spacing:.18em;color:#5EEAD4} .head h1{font-size:24pt;margin-top:8px;line-height:1.15}
 h1{display:none} h2{font-size:15pt;margin:20px 0 6px;color:#0F172A;border-bottom:2px solid #CCFBF1;padding-bottom:4px}
 p,li{margin:5px 0} ul{padding-left:20px} blockquote{background:#F1F5F9;border-left:4px solid #14B8A6;padding:8px 12px;margin:10px 0;font-size:10pt}
 table{border-collapse:collapse;width:100%;font-size:10pt;margin:8px 0} td,th{border:1px solid #E2E8F0;padding:6px 8px;text-align:left} th{background:#F8FAFC}
-code{font-family:'JetBrains Mono';font-size:9pt;background:#F1F5F9;padding:1px 4px;border-radius:4px} em{color:#64748B}
+code{font-family:'JetBrains Mono';font-size:9pt;background:#F1F5F9;padding:1px 4px;border-radius:4px}
 img{width:100%;border:1px solid #E2E8F0;border-radius:8px;margin:8px 0}
-</style></head><body><div class="head"><p>P07 · CASE STUDY</p><h1>SheetReach — Excel → WhatsApp campaign automation</h1></div><h1>Case study — SheetReach: Excel → WhatsApp campaign automation</h1>
-<p><em>Portfolio project 07. Fictional sample data, simulated WhatsApp sending. This is not a client project.</em></p>
+</style></head><body><div class="head"><p>CASE STUDY</p><h1>SheetReach — Excel → WhatsApp campaign automation</h1></div><h1>Case study — SheetReach: Excel → WhatsApp campaign automation</h1>
 <h2>Problem</h2>
 <p>Many businesses keep customer and lead contacts in Excel. Before they can send a WhatsApp offer or update, someone has to:
 - clean the phone numbers by hand (<code>050 123 4567</code>, <code>+971-50-…</code>, <code>00971…</code>, blank cells, two numbers in one cell)
@@ -33,7 +32,7 @@ img{width:100%;border:1px solid #E2E8F0;border-radius:8px;margin:8px 0}
 <p>n8n calls SheetReach's API with standard HTTP Request nodes. The rules stay in one place (SheetReach), and n8n handles triggers, sequencing and reporting. The workflow ends cleanly with a reason if the file has nothing new or nobody is eligible. It was executed successfully in n8n 2.42.4 against the running app.</p>
 <h2>WhatsApp</h2>
 <p>SheetReach sends through a <strong>provider layer</strong>:
-- <strong>Demo WhatsApp provider</strong> (used in this portfolio): simulates acceptance, delivery, failures, retries and STOP replies on fictional data. No message leaves the app, and the interface says so on every campaign.
+- <strong>Sandbox WhatsApp provider</strong> (default, for testing): runs the full flow (acceptance, delivery updates, failures, retries and STOP replies) without contacting real numbers. Every campaign screen shows which provider is active.
 - <strong>WhatsApp Business Cloud API provider</strong> (production): built on Meta's official API, using approved message templates and the delivery-status webhook. It switches on only when the client's Meta credentials are configured. It was not run against Meta in this project.</p>
 <p>No WhatsApp Web automation, browser bots, anti-ban tricks or rate-limit evasion are used.</p>
 <h2>Safety</h2>
@@ -62,11 +61,11 @@ img{width:100%;border:1px solid #E2E8F0;border-radius:8px;margin:8px 0}
 </tr>
 <tr>
 <td>Database</td>
-<td>SQLite for the demo; Postgres through one setting</td>
+<td>SQLite by default; Postgres through one setting</td>
 </tr>
 <tr>
 <td>WhatsApp</td>
-<td><code>WhatsAppProvider</code> → <code>DemoWhatsAppProvider</code> / <code>WhatsAppCloudAPIProvider</code></td>
+<td>One provider layer: sandbox provider / official WhatsApp Cloud API provider</td>
 </tr>
 <tr>
 <td>Automation</td>
@@ -79,10 +78,10 @@ img{width:100%;border:1px solid #E2E8F0;border-radius:8px;margin:8px 0}
 </tbody>
 </table>
 <h2>Result</h2>
-<p>What the project demonstrates, measured on the fictional sample file in Demo Mode:
+<p>What the workflow delivers, measured on a 1,250-row sample file with the sandbox provider:
 - A messy 1,250-row Excel file is cleaned and classified automatically, with a reason for every excluded row.
 - One message is personalised for 1,092 eligible contacts. The 72 without an opt-in are skipped and listed, not messaged.
-- The complete process runs end to end from n8n, about 1 minute in the demo, and returns a report with the Excel results.
+- The complete process runs end to end from n8n, in about 1 minute, and returns a report with the Excel results.
 - Opt-outs during a campaign are added to Do Not Contact and excluded from the next campaign.</p>
-<p>All delivery numbers come from the simulated provider and are <strong>not</strong> real WhatsApp results. No client, revenue or performance figures are claimed.</p>
-<h2>Screens</h2><img src="../screenshots/02-upload-validation.png"><img src="../screenshots/06-n8n-workflow-run.png"><img src="../screenshots/08-campaign-results.png"><img src="../screenshots/10-architecture.png"></body></html>
+<p>Delivery figures come from the sandbox provider; live delivery depends on the client's WhatsApp account and audience.</p>
+<h2>Screens</h2><img src="../screenshots/02-upload-validation.png"><img src="../screenshots/06-n8n-workflow-run.png"><img src="../screenshots/08-campaign-results.png"><img src="../assets/architecture-1600x1200.png"></body></html>

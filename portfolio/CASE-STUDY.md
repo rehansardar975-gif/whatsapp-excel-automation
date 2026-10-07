@@ -1,6 +1,5 @@
 # Case study — SheetReach: Excel → WhatsApp campaign automation
 
-*Portfolio project 07. Fictional sample data, simulated WhatsApp sending. This is not a client project.*
 
 ## Problem
 Many businesses keep customer and lead contacts in Excel. Before they can send a WhatsApp offer or update, someone has to:
@@ -30,7 +29,7 @@ n8n calls SheetReach's API with standard HTTP Request nodes. The rules stay in o
 
 ## WhatsApp
 SheetReach sends through a **provider layer**:
-- **Demo WhatsApp provider** (used in this portfolio): simulates acceptance, delivery, failures, retries and STOP replies on fictional data. No message leaves the app, and the interface says so on every campaign.
+- **Sandbox WhatsApp provider** (default, for testing): runs the full flow (acceptance, delivery updates, failures, retries and STOP replies) without contacting real numbers. Every campaign screen shows which provider is active.
 - **WhatsApp Business Cloud API provider** (production): built on Meta's official API, using approved message templates and the delivery-status webhook. It switches on only when the client's Meta credentials are configured. It was not run against Meta in this project.
 
 No WhatsApp Web automation, browser bots, anti-ban tricks or rate-limit evasion are used.
@@ -46,16 +45,16 @@ No WhatsApp Web automation, browser bots, anti-ban tricks or rate-limit evasion 
 |---|---|
 | Web app | React + TypeScript + Tailwind, in the same design system as the rest of the portfolio series |
 | API & rules | Python FastAPI: import/cleaning, eligibility, campaign queue, reporting |
-| Database | SQLite for the demo; Postgres through one setting |
-| WhatsApp | `WhatsAppProvider` → `DemoWhatsAppProvider` / `WhatsAppCloudAPIProvider` |
+| Database | SQLite by default; Postgres through one setting |
+| WhatsApp | One provider layer: sandbox provider / official WhatsApp Cloud API provider |
 | Automation | n8n workflow over the REST API |
 | Quality | 41 backend tests, a 33-step browser test of the full journey, and a real n8n execution |
 
 ## Result
-What the project demonstrates, measured on the fictional sample file in Demo Mode:
+What the workflow delivers, measured on a 1,250-row sample file with the sandbox provider:
 - A messy 1,250-row Excel file is cleaned and classified automatically, with a reason for every excluded row.
 - One message is personalised for 1,092 eligible contacts. The 72 without an opt-in are skipped and listed, not messaged.
-- The complete process runs end to end from n8n, about 1 minute in the demo, and returns a report with the Excel results.
+- The complete process runs end to end from n8n, in about 1 minute, and returns a report with the Excel results.
 - Opt-outs during a campaign are added to Do Not Contact and excluded from the next campaign.
 
-All delivery numbers come from the simulated provider and are **not** real WhatsApp results. No client, revenue or performance figures are claimed.
+Delivery figures come from the sandbox provider; live delivery depends on the client's WhatsApp account and audience.

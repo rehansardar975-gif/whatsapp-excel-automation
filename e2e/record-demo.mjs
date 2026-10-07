@@ -1,4 +1,4 @@
-// Records the portfolio demo video from the running apps (SheetReach + a real n8n execution).
+// Records the product video from the running apps (SheetReach + a real n8n execution).
 // Subtitles come from portfolio/_build/audio/captions.json; each stays on screen for at least the
 // length of its voice clip (durations.json), and the moment it appears is logged so the voiceover
 // (the same words) can be placed exactly. Usage:
@@ -41,7 +41,7 @@ async function say(id, top = false) {
     await page.setContent(`<html><head><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@500;600&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet"></head>
     <body style="margin:0;height:100vh;background:#0B0F17;color:#fff;display:flex;flex-direction:column;justify-content:center;padding:0 110px;font-family:Inter;overflow:hidden;position:relative">
     <div style="position:absolute;width:900px;height:900px;border-radius:50%;right:-260px;top:-300px;background:radial-gradient(circle,rgba(20,184,166,.25),rgba(20,184,166,0) 62%)"></div>
-    <p style="font:600 15px 'JetBrains Mono';letter-spacing:.2em;color:#5eead4;margin:0">P07 · PORTFOLIO DEMO</p>
+    <p style="font:600 15px 'JetBrains Mono';letter-spacing:.2em;color:#5eead4;margin:0">SHEETREACH</p>
     <h1 style="font:800 62px/1.06 'Plus Jakarta Sans';letter-spacing:-.03em;margin:18px 0 0;max-width:1150px">${c.title}</h1>
     <p style="font:500 26px/1.4 Inter;color:#C7CDE0;margin:22px 0 0;max-width:1050px">${c.text}</p>
     <p style="position:absolute;left:110px;bottom:56px;font:600 13px 'JetBrains Mono';letter-spacing:.14em;color:#64748B;margin:0">${c.foot}</p></body></html>`);

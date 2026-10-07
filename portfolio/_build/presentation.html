@@ -21,11 +21,11 @@ ul.pts li:before{content:"";position:absolute;left:4px;top:24px;width:14px;heigh
 </style></head><body>
 
 <section class="s dark"><div class="glow"></div>
-<p class="eyebrow">Portfolio project 07 · Automation</p>
+<p class="eyebrow">Excel · n8n · WhatsApp automation</p>
 <h1>SheetReach<br><span style="color:#5EEAD4">Excel → WhatsApp</span> campaign automation</h1>
 <p class="lead">Upload a contact list, clean it automatically, send a personalised WhatsApp message to the right people, and see exactly what happened. Runs end to end from an n8n workflow.</p>
 <div style="margin-top:44px;width:1250px" class="frame"><div class="bar"><i></i><i></i><i></i><span>SheetReach · Dashboard</span></div><img src="../screenshots/01-dashboard.png"></div>
-<div class="foot"><span>Fictional sample data · demo WhatsApp provider</span><span>Not a client project</span></div></section>
+<div class="foot"><span>SheetReach</span><span>Excel → WhatsApp automation</span></div></section>
 
 <section class="s"><p class="eyebrow">01 · The business problem</p>
 <h2>Contact lists live in Excel. Sending a WhatsApp campaign from them is slow and risky.</h2>
@@ -54,7 +54,7 @@ ul.pts li:before{content:"";position:absolute;left:4px;top:24px;width:14px;heigh
 <h2>A 1,250-row file, checked in seconds</h2>
 <div class="kpis"><div class="kpi"><p>Rows in file</p><b>1,250</b></div><div class="kpi"><p>Ready to message</p><b style="color:#059669">1,092</b></div><div class="kpi"><p>Duplicates removed</p><b style="color:#4F46E5">41</b></div><div class="kpi"><p>Invalid / missing / DNC</p><b style="color:#DC2626">15 · 18 · 12</b></div></div>
 <div style="margin-top:28px;width:1150px" class="frame"><div class="bar"><i></i><i></i><i></i><span>Upload Excel · Review & clean</span></div><img src="../screenshots/02-upload-validation.png"></div>
-<div class="foot"><span>Fictional sample file</span><span>04</span></div></section>
+<div class="foot"><span>Sample contact file</span><span>04</span></div></section>
 
 <section class="s"><p class="eyebrow">04 · Personalisation</p>
 <h2>Write the message once. Every contact gets their own name and business.</h2>
@@ -70,7 +70,7 @@ ul.pts li:before{content:"";position:absolute;left:4px;top:24px;width:14px;heigh
 <section class="s"><p class="eyebrow">06 · Campaign dashboard</p>
 <h2>Watch the campaign run: retries and opt-outs handled automatically</h2>
 <div style="margin-top:36px;width:1350px" class="frame"><div class="bar"><i></i><i></i><i></i><span>Campaign started by n8n · processing</span></div><img src="../screenshots/07-campaign-processing.png"></div>
-<div class="foot"><span>Demo Mode: sending is simulated</span><span>07</span></div></section>
+<div class="foot"><span>Started automatically by n8n</span><span>07</span></div></section>
 
 <section class="s"><p class="eyebrow">07 · Results & reporting</p>
 <h2>Clear outcome, with a reason for every failure and skip</h2>
@@ -78,12 +78,12 @@ ul.pts li:before{content:"";position:absolute;left:4px;top:24px;width:14px;heigh
 <div class="frame"><div class="bar"><i></i><i></i><i></i><span>SheetReach · results</span></div><img src="../screenshots/08-campaign-results.png"></div>
 <div class="frame"><div class="bar"><i></i><i></i><i></i><span>n8n · final report</span></div><img src="../screenshots/09-n8n-final-report.png"></div></div>
 <p class="lead" style="font-size:24px">Results export to Excel. Opted-out numbers go onto the Do Not Contact list and are blocked from every future campaign.</p>
-<div class="foot"><span>Simulated results on fictional data</span><span>08</span></div></section>
+<div class="foot"><span>Results with reasons · Excel export</span><span>08</span></div></section>
 
 <section class="s"><p class="eyebrow">08 · WhatsApp readiness & safety</p>
 <h2>Built for the official WhatsApp Business Cloud API</h2>
 <div class="two">
-<div class="card" style="background:#fff;border:2px solid var(--accent)"><span class="badge b-demo">This demo</span><h3>Demo WhatsApp provider</h3><p>Simulates sending, delivery, failures, retries and STOP replies so the full workflow can be shown safely. No real messages are sent.</p></div>
+<div class="card" style="background:#fff;border:2px solid var(--accent)"><span class="badge b-demo">Testing</span><h3>Sandbox WhatsApp provider</h3><p>Runs the full sending flow (delivery updates, failures, retries and STOP replies) without contacting real numbers. Ideal for testing and training.</p></div>
 <div class="card" style="background:#fff;border:2px dashed #818CF8"><span class="badge b-ready">Production</span><h3>WhatsApp Business Cloud API</h3><p>Implemented as a provider. Switched on with the client's Meta credentials, approved message templates and the status webhook.</p></div></div>
 <ul class="pts" style="margin-top:30px"><li>Only contacts with a WhatsApp opt-in are messaged</li><li>Do Not Contact is checked again right before every message</li><li>No WhatsApp Web bots, no anti-ban tricks, no rate-limit evasion</li></ul>
 <div class="foot"><span>SheetReach · P07</span><span>09</span></div></section>
@@ -92,7 +92,7 @@ ul.pts li:before{content:"";position:absolute;left:4px;top:24px;width:14px;heigh
 <h2>Simple on the surface. Powerful underneath.</h2>
 <div class="stack">
 <div><b>FRONTEND</b><p>React · TypeScript · Tailwind</p></div><div><b>BACKEND</b><p>Python FastAPI · SQLAlchemy · SQLite / Postgres</p></div><div><b>AUTOMATION</b><p>n8n workflow (importable JSON) over a REST API</p></div>
-<div><b>WHATSAPP</b><p>Provider layer: Demo · official Cloud API</p></div><div><b>DATA</b><p>Excel/CSV import, E.164 numbers, Excel export</p></div><div><b>QUALITY</b><p>41 backend tests · 33-step browser test · real n8n run</p></div></div>
+<div><b>WHATSAPP</b><p>Provider layer: Sandbox · official Cloud API</p></div><div><b>DATA</b><p>Excel/CSV import, E.164 numbers, Excel export</p></div><div><b>QUALITY</b><p>41 backend tests · 33-step browser test · real n8n run</p></div></div>
 <p class="lead" style="margin-top:40px">Need your contact lists turned into safe, personalised WhatsApp campaigns, or another Excel / CRM / n8n automation? I can build the same kind of workflow around your own accounts.</p>
-<div class="foot"><span>Muhammad Rehan Ansar · AI & automation (Upwork)</span><span>Portfolio project · fictional data</span></div></section>
+<div class="foot"><span>Muhammad Rehan Ansar · AI & automation (Upwork)</span><span>SheetReach · Excel → WhatsApp automation</span></div></section>
 </body></html>

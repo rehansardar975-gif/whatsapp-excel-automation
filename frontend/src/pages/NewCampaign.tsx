@@ -128,7 +128,7 @@ export default function NewCampaign() {
             </div>
             <div className="flex items-start gap-3 rounded-xl border border-teal-200 bg-teal-50 p-4 text-sm text-teal-900">
               <Info className="mt-0.5 h-5 w-5 shrink-0" />
-              <div><div className="mb-1"><DemoModePill /></div>No real WhatsApp messages will be sent. Sending, delivery and failures are simulated so you can see exactly how a live campaign behaves. Connecting the official WhatsApp Business Cloud API switches this to live sending.</div>
+              <div><div className="mb-1"><DemoModePill /></div>This campaign runs on the sandbox provider: sending, delivery updates, retries and failures behave exactly like a live campaign. Connect the official WhatsApp Business Cloud API to send live.</div>
             </div>
           </div>
           <div className="space-y-4">

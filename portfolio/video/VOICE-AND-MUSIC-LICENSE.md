@@ -1,6 +1,6 @@
 # Voice and music licence record — P07 demo video
 
-File: `P07-sheetreach-n8n-demo.mp4`, 2 min 14 s, 1440×900, H.264 + AAC stereo.
+File: `P07-sheetreach-n8n-demo.mp4`, 2 min 11 s, 1440×900, H.264 + AAC stereo.
 
 ## Voiceover
 - **Model:** Kokoro-82M, an open-weight text-to-speech model, licence **Apache-2.0** (commercial use allowed).
@@ -15,7 +15,7 @@ File: `P07-sheetreach-n8n-demo.mp4`, 2 min 14 s, 1440×900, H.264 + AAC stereo.
 
 ## Mix
 - Voice normalised to −16 LUFS; music at −30 LUFS and ducked further under the voice (`mix.sh`).
-- Measured on the final file: −15.1 LUFS integrated, peak −3.1 dBFS.
+- Measured on the final file: −15.2 LUFS integrated, peak −3.1 dBFS.
 
 ## Footage
-Screen recording of the real running apps (SheetReach + self-hosted n8n 2.42.4) with fictional sample data. Three silent stretches were cut: page loading, the end of the processing wait and one navigation. Nothing on screen was staged or painted in.
+Screen recording of the real running apps (SheetReach + self-hosted n8n 2.42.4) with sample data. Three silent stretches were cut: page loading, the end of the processing wait and one navigation. Nothing on screen was staged or painted in.

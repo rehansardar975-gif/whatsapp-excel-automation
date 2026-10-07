@@ -34,7 +34,7 @@
     },
     {
       "parameters": {
-        "content": "## 3 · Personalise & send\nOne message, personalised per contact. Sent through SheetReach's WhatsApp provider: **Demo provider** by default (simulated, nothing leaves the app) or the official **WhatsApp Business Cloud API** when the client's credentials are configured.",
+        "content": "## 3 · Personalise & send\nOne message, personalised per contact. Sent through SheetReach's WhatsApp provider: the **sandbox provider** for testing or the official **WhatsApp Business Cloud API** when the client's credentials are configured.",
         "height": 460,
         "width": 900,
         "color": 4
@@ -532,7 +532,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// One clear summary of the whole run, with the Excel results attached.\nconst s = $('Settings').first().json;\nconst q = $('Data quality report').first().json;\nconst c = $('Campaign finished?').first().json;\nconst r = c.report;\nconst demo = c.provider === 'demo';\nreturn [{\n  json: {\n    result: `Campaign \"${c.name}\" complete`,\n    whatsapp_provider: demo ? 'Demo provider — sending simulated, no real WhatsApp messages were sent'\n                            : 'WhatsApp Business Cloud API',\n    file: q.file,\n    cleaning: {\n      rows_in_file: q.rows_in_file,\n      duplicates_removed: q.duplicates_removed,\n      invalid_numbers: q.invalid_numbers,\n      missing_numbers: q.missing_numbers,\n      blocked_do_not_contact: q.do_not_contact,\n      imported: q.will_import,\n    },\n    campaign: {\n      contacts: r.total, processed: r.processed, sent: r.sent, delivered: r.delivered,\n      failed: r.failed, skipped: r.skipped, opted_out: r.opted_out, retried: r.retried,\n    },\n    why_failed: r.failed_reasons,\n    why_skipped: r.skipped_reasons,\n    open_in_sheetreach: `${s.sheetreachUrl}/campaigns/${c.id}`,\n  },\n  binary: $input.first().binary,\n}];"
+        "jsCode": "// One clear summary of the whole run, with the Excel results attached.\nconst s = $('Settings').first().json;\nconst q = $('Data quality report').first().json;\nconst c = $('Campaign finished?').first().json;\nconst r = c.report;\nconst demo = c.provider === 'demo';\nreturn [{\n  json: {\n    result: `Campaign \"${c.name}\" complete`,\n    whatsapp_provider: demo ? 'Sandbox provider (testing)'\n                            : 'WhatsApp Business Cloud API',\n    file: q.file,\n    cleaning: {\n      rows_in_file: q.rows_in_file,\n      duplicates_removed: q.duplicates_removed,\n      invalid_numbers: q.invalid_numbers,\n      missing_numbers: q.missing_numbers,\n      blocked_do_not_contact: q.do_not_contact,\n      imported: q.will_import,\n    },\n    campaign: {\n      contacts: r.total, processed: r.processed, sent: r.sent, delivered: r.delivered,\n      failed: r.failed, skipped: r.skipped, opted_out: r.opted_out, retried: r.retried,\n    },\n    why_failed: r.failed_reasons,\n    why_skipped: r.skipped_reasons,\n    open_in_sheetreach: `${s.sheetreachUrl}/campaigns/${c.id}`,\n  },\n  binary: $input.first().binary,\n}];"
       },
       "id": "82cf4645-51d9-4ef9-a802-5cf4ecd5a4a9",
       "name": "Final report",

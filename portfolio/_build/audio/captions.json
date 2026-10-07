@@ -1,5 +1,5 @@
 [
-  {"id": "title", "card": true, "title": "Excel contacts → clean data → personalised WhatsApp campaign", "text": "SheetReach + n8n. The complete workflow, automated end to end.", "foot": "FICTIONAL SAMPLE DATA · DEMO WHATSAPP PROVIDER · NO REAL MESSAGES ARE SENT"},
+  {"id": "title", "card": true, "title": "Excel contacts → clean data → personalised WhatsApp campaign", "text": "SheetReach + n8n. The complete workflow, automated end to end.", "foot": "SHEETREACH · EXCEL → WHATSAPP AUTOMATION WITH n8n"},
   {"id": "problem", "step": "THE PROBLEM", "text": "Contacts live in Excel. Before a WhatsApp campaign, they must be cleaned, checked for consent and personalised — usually by hand."},
   {"id": "upload", "step": "STEP 1 · UPLOAD", "text": "Upload a messy contact file. No setup needed."},
   {"id": "clean", "step": "STEP 2 · CLEAN & VALIDATE", "text": "SheetReach finds the columns, fixes number formats, removes duplicates, and blocks invalid and Do Not Contact numbers."},
@@ -9,10 +9,10 @@
   {"id": "n8n-run", "step": "STEP 4 · n8n AUTOMATION", "text": "Running live: download the file, clean and validate, check opt-in and Do Not Contact, create the campaign, start sending."},
   {"id": "n8n-wait", "step": "STEP 4 · n8n AUTOMATION", "text": "The campaign is running. n8n keeps checking progress until the queue is finished."},
   {"id": "processing", "step": "STEP 5 · PROCESSING", "text": "Messages go out one by one through the WhatsApp provider. Temporary errors are retried automatically."},
-  {"id": "demo-mode", "step": "STEP 5 · PROCESSING", "text": "Demo Mode: sending is simulated on fictional data. The official WhatsApp Business Cloud API connects with the client's own account."},
+  {"id": "demo-mode", "step": "STEP 5 · PROCESSING", "text": "Sandbox mode for testing. The official WhatsApp Business Cloud API connects with the client's own Meta account."},
   {"id": "results", "step": "STEP 6 · RESULTS", "text": "Clear results: sent, delivered, failed and skipped — each with a plain reason."},
   {"id": "safety", "step": "SAFETY", "text": "People who reply STOP are added to Do Not Contact and blocked from every future campaign."},
   {"id": "export", "step": "STEP 6 · RESULTS", "text": "The full results are exported to Excel."},
   {"id": "report", "step": "STEP 7 · REPORT", "text": "n8n finished the run: the execution succeeded, and the final report was built with the Excel results attached."},
-  {"id": "end", "card": true, "title": "Excel → clean contacts → WhatsApp campaign → report", "text": "Built on the official WhatsApp Business Cloud API design. The demo uses a simulated provider; the client's Meta account connects in production.", "foot": "SHEETREACH · PORTFOLIO PROJECT 07 · FICTIONAL DATA — NOT A CLIENT PROJECT"}
+  {"id": "end", "card": true, "title": "Excel → clean contacts → WhatsApp campaign → report", "text": "Built on the official WhatsApp Business Cloud API design. Tested on a sandbox provider; the client's Meta account connects for live sending.", "foot": "SHEETREACH · EXCEL → WHATSAPP AUTOMATION WITH n8n"}
 ]

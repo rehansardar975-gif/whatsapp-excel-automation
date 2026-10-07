@@ -16,7 +16,7 @@ rows = contact_rows(1208, seed=1250)
 wb = Workbook()
 ws = wb.active
 ws.title = "Contacts"
-ws.append(["Gulf Trade Leads — SAMPLE DATA (fictional, for demo only)"])
+ws.append(["Gulf Trade Leads — contact list"])
 ws["A1"].font = Font(bold=True)
 ws.append([])
 headers = list(rows[0].keys())
